@@ -1,11 +1,13 @@
 // jest.config.js
 
 module.exports = {
+  clearMocks: true,
   collectCoverageFrom: [
     "**/*.{js,jsx,ts,tsx}",
     "!**/*.d.ts",
     "!**/node_modules/**",
   ],
+  coverageDirectory: "<rootDir>/.coverage",
   moduleNameMapper: {
     // handle module path aliases
     "^@/components/(.*)$": "<rootDir>/components/$1",
@@ -33,4 +35,6 @@ module.exports = {
     "^.+\\.module\\.(css|sass|scss)$",
   ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-}
+  reporters: ["default", ["jest-junit", { suiteName: "jest tests" }]],
+  testResultsProcessor: "jest-junit",
+};

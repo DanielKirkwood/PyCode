@@ -119,7 +119,7 @@ const Challenges: NextPage = () => {
 
 // TODO: add getStaticProps() with revalidation set
 
-// TODO: add getStaticPaths() with fallback: 'blocking' to pre-render the availibe challenged at build time, the rest will server-side render the other pages on-demand
+// TODO: add getStaticPaths() with fallback: 'blocking' to pre-render the available challenged at build time, the rest will server-side render the other pages on-demand
 
 // ?: https://nextjs.org/docs/basic-features/data-fetching for help with above functions
 

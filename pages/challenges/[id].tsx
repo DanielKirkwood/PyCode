@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import { useState } from 'react'
 import { Drawer, Button, Divider, Typography, Collapse } from 'antd'
+import CodeEditor from '@/components/CodeEditor'
 
 const { Title, Text } = Typography
 
@@ -26,6 +27,7 @@ const ChallengePage: NextPage = () => {
       <Button type="primary" onClick={() => setVisible(true)}>
         Open
       </Button>
+      <CodeEditor />
       <Drawer
         width={'75vw'}
         title={<Title level={3}>{challengeData.title}</Title>}

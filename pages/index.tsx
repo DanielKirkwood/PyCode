@@ -1,4 +1,3 @@
-import CodeEditor from '@/components/CodeEditor'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -21,8 +20,6 @@ const Home: NextPage = () => {
         <p className={styles.description}>
           Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
-
-        <CodeEditor />
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>

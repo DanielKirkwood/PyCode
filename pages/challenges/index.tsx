@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
-import { List, PageHeader, Button, Space } from 'antd'
+import { List, Button, Space } from 'antd'
 import { CodeOutlined } from '@ant-design/icons'
 
 // TODO: Delete tempDara
@@ -86,12 +86,6 @@ const Challenges: NextPage = () => {
   const router: NextRouter = useRouter()
   return (
     <>
-      <PageHeader
-        className="site-page-header"
-        onBack={() => router.push('/')}
-        title="Challenges"
-        subTitle="Here you can view the list of available challenges"
-      />
       <List
         size="large"
         dataSource={tempData}

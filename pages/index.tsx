@@ -13,6 +13,7 @@ const Home: NextPage = () => {
           <p className="leading-normal text-2xl mb-6">Challenge yourself and others python coding ability</p>
           <Link href="/">
             <a
+              data-testid="sign-up button"
               className="md:mx-0 mx-auto hover:underline hover:text-white bg-blue-400 text-white
              font-bold rounded-lg my-3 py-2 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
             >

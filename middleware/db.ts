@@ -1,12 +1,15 @@
 // middleware.db.ts
 // attaches databse and client to request object
 
-import { connectToDatabase } from '../db/connect'
+import clientPromise from 'lib/mongodb'
+
+const MONGODB_DB = process.env.MONGODB_DB
 
 export default async function database(req, res, next) {
-  const { db, dbClient } = await connectToDatabase()
+  const dbClient = await clientPromise
+  const db = dbClient.db(MONGODB_DB)
   req.db = db
-  req.dbClinet = dbClient
+  req.dbClient = dbClient
 
   next()
 }

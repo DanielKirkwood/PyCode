@@ -27,6 +27,7 @@ const Login: NextPage = () => {
                 Email
               </label>
               <input
+                id="email"
                 type="text"
                 placeholder="Email"
                 onChange={(e) => setEmail(e.target.value)}
@@ -41,6 +42,7 @@ const Login: NextPage = () => {
                 Password
               </label>
               <input
+                id="password"
                 type="password"
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
@@ -71,7 +73,7 @@ const Login: NextPage = () => {
           <FaGithub className="absolute top-1/2 transform -translate-y-1/2 left-10 text-xl" />
           Sign in with GitHub
         </button>
-        <Link href="/">
+        <Link href="/signup">
           <a className="block text-sm text-center pt-5 text-blue-600 hover:underline">Not got an account?</a>
         </Link>
       </div>

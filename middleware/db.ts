@@ -1,7 +1,7 @@
 // middleware.db.ts
 // attaches databse and client to request object
 
-import clientPromise from 'lib/mongodb'
+import clientPromise from 'lib/db/mongodb'
 
 const MONGODB_DB = process.env.MONGODB_DB
 

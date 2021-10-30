@@ -6,7 +6,7 @@ orbs:
 jobs:
   lint-and-test:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:14.18
     steps:
       - checkout
       - restore_cache:

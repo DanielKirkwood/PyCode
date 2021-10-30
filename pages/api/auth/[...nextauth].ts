@@ -19,9 +19,9 @@ const authHandler: NextApiHandler = async (req, res) =>
       maxAge: 30 * 24 * 60 * 60,
     },
     jwt: {
-      secret: process.env.NEXT_PUBLIC_JWT_SECRET,
+      secret: process.env.SECRET,
     },
-    secret: process.env.NEXT_PUBLIC_JWT_SECRET,
+    secret: process.env.SECRET,
     adapter: MongoDBAdapter({
       db: (await clientPromise).db(MONGODB_DB),
     }),

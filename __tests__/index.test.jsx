@@ -7,6 +7,7 @@
 import React from "react"
 import { render, screen } from "@testing-library/react"
 import Home from "../pages/index"
+import { SessionProvider } from 'next-auth/react'
 
 jest.mock(
   'next/image',
@@ -17,9 +18,17 @@ jest.mock(
     }
 )
 
+const wrapWithSession = (session, component) => {
+  return (
+    <SessionProvider session={session} refetchInterval={5 * 60}>
+      {component}
+    </SessionProvider>
+  )
+}
+
 describe('Home', () => {
-  it('renders the main heading', () => {
-    render(<Home />)
+  it('renders the main heading', async () => {
+    render(wrapWithSession(null, <Home />))
 
     const heading = screen.getByRole('heading', {
       level: 1,
@@ -29,13 +38,28 @@ describe('Home', () => {
     expect(heading).toBeInTheDocument()
   })
 
-  it('renders a sign-in button', () => {
-    render(<Home />)
+  it('renders login button if user not signed in', () => {
+    render(wrapWithSession(null, <Home />))
 
-    const button = screen.getByTestId('sign-up button')
+    const button = screen.getByTestId('call to action')
 
     expect(button).toBeInTheDocument()
 
-    expect(button).toHaveAttribute('href', '/')
+    expect(button).toHaveAttribute('href', '/login')
+  })
+
+  it('renders challenge button if user signed in', () => {
+    const session = {
+      expires: '1',
+      user: { email: 'user@email.com', name: 'John Doe', image: 'url-to-image' },
+    }
+
+    render(wrapWithSession(session, <Home />))
+
+    const button = screen.getByTestId('call to action')
+
+    expect(button).toBeInTheDocument()
+
+    expect(button).toHaveAttribute('href', '/challenges')
   })
 })

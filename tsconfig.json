@@ -5,7 +5,7 @@
       "@/components/*": ["components/*"]
     },
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "dom.iterable", "esnext", "ES2015.Promise"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,

@@ -63,7 +63,10 @@ const Login: NextPage = () => {
     const data = await response.json()
 
     if (response.status === 201) {
-      router.push('/challenges')
+      router.push({
+        pathname: '/login',
+        query: { message: 'account created' },
+      })
     } else {
       setError(data.message)
     }

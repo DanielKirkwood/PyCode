@@ -29,10 +29,28 @@ const authHandler: NextApiHandler = async (req, res) =>
       GithubProvider({
         clientId: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
+        profile(profile) {
+          return {
+            id: profile.id,
+            name: profile.name || profile.login,
+            email: profile.email,
+            image: profile.avatar_url,
+            role: 'user',
+          }
+        },
       }),
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        profile(profile) {
+          return {
+            id: profile.id,
+            name: profile.name,
+            email: profile.email,
+            image: profile.picture,
+            role: 'user',
+          }
+        },
       }),
       CredentialsProvider({
         id: 'credentials',
@@ -69,7 +87,7 @@ const authHandler: NextApiHandler = async (req, res) =>
             dbClient.close()
           }
 
-          return { email: user.email, name: user.name, image: user.image }
+          return { email: user.email, name: user.name, image: user.image, role: user.role }
         },
       }),
     ],

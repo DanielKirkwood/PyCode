@@ -51,6 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     password: await hashPassword(password),
     image: '/public/default_user.png',
     emailVerified: null,
+    role: 'user',
   })
 
   res.status(201).json({ message: 'User created', ...status })

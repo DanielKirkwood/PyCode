@@ -65,7 +65,7 @@ const Login: NextPage = () => {
     if (response.status === 201) {
       router.push({
         pathname: '/login',
-        query: { message: 'account created' },
+        query: { message: 'account_created' },
       })
     } else {
       setError(data.message)

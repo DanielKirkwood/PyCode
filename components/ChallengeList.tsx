@@ -1,6 +1,7 @@
 import React from 'react'
 import ChallengeCard from '@/components/ChallengeCard'
 import useSWR from 'swr'
+import SkeletonChallengeList from './SkeletonChallengeList'
 
 interface Challenge {
   _id: number
@@ -21,7 +22,7 @@ const ChallengeList = ({ limit, skip }: Props) => {
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full">
         {error && <h1>Failed to load</h1>}
-        {!data && <h1>Loading...</h1>}
+        {!data && <SkeletonChallengeList numChallenges={limit} />}
         {data &&
           data.map((challenge: Challenge) => (
             <ChallengeCard

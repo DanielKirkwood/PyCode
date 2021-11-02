@@ -1,18 +1,41 @@
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getAll, insertOne } from 'lib/db/challenges'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const limit = parseInt(req.query.limit as string, 10)
-    const skip = parseInt(req.query.skip as string, 10)
+  const dbClient = await clientPromise
+  const challenges = dbClient.db(process.env.MONGODB_DB).collection('challenges')
 
-    const dbClient = await clientPromise
-    const challenges = dbClient.db(process.env.MONGODB_DB).collection('challenges')
+  const { method } = req
+  switch (method) {
+    case 'GET':
+      const limit = !req.query.limit ? 50 : req.query.limit
+      const skip = !req.query.skip ? 0 : req.query.skip
 
-    const result = await challenges.find({}).skip(skip).limit(limit).toArray()
-
-    return res.status(200).json(result)
-  } catch (error) {
-    return res.status(500).json(error)
+      const documents = await getAll(challenges, parseInt(limit as string, 10), parseInt(skip as string, 10))
+      if (process.env.NODE_ENV === 'production') {
+        dbClient.close()
+      }
+      if (documents === null) {
+        res.status(500).json({ error: 'error getting challenges ' })
+      }
+      res.status(200).json(documents)
+      break
+    case 'POST':
+      const documentId = await insertOne(challenges, req.body)
+      if (process.env.NODE_ENV === 'production') {
+        dbClient.close()
+      }
+      if (documentId === null) {
+        res.status(500).json({ error: 'could not insert challenge' })
+      }
+      res.status(200).json({ message: `Successfully added challenge ${documentId}`, insertId: documentId })
+      break
+    default:
+      if (process.env.NODE_ENV === 'production') {
+        dbClient.close()
+      }
+      res.setHeader('Allow', ['GET', 'POST'])
+      res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

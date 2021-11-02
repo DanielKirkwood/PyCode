@@ -1,54 +1,117 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { Menu } from 'antd'
-import { FaCode, FaHome } from 'react-icons/fa'
+import { FaCode, FaHome, FaBars } from 'react-icons/fa'
 import { FiLogIn, FiLogOut } from 'react-icons/fi'
 import { CgProfile } from 'react-icons/cg'
 
 function NavBar(): ReactElement {
-  const router = useRouter()
-  const [selected, setSelected] = useState('home')
-
   const { data: session, status } = useSession()
 
-  useEffect(() => {
-    if (router.pathname === '/') {
-      setSelected('home')
-    } else if (router.pathname.startsWith('/challenges')) {
-      setSelected('challenges')
-    } else if (router.pathname === '/login' || router.pathname === '/signup') {
-      setSelected('login')
-    }
-  }, [router])
+  const [navbarOpen, setNavbarOpen] = React.useState(false)
+  const router = useRouter()
+
+  function isActive(url: string): boolean {
+    return router.asPath === url
+  }
 
   return (
-    <Menu onClick={(e) => setSelected(e.key)} selectedKeys={[selected]} mode="horizontal">
-      <Menu.Item key="home" icon={<FaHome />}>
-        <Link href="/">Home</Link>
-      </Menu.Item>
-      <Menu.Item key="challenges" icon={<FaCode />}>
-        <Link href={'/challenges'}>Challenges</Link>
-      </Menu.Item>
+    <>
+      <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 bg-blue-500">
+        <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
+          <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
+            <Link href="/">
+              <a className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white">
+                PyCode
+              </a>
+            </Link>
+            <button
+              className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+              type="button"
+              onClick={() => setNavbarOpen(!navbarOpen)}
+              data-testid="hamburger-icon"
+            >
+              <FaBars />
+            </button>
+          </div>
+          <div
+            className={'lg:flex flex-grow items-center' + (navbarOpen ? ' flex' : ' hidden')}
+            data-testid="nav-items"
+          >
+            <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
+              <li className="nav-item">
+                <Link href="/">
+                  <a
+                    className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                      isActive('/') ? 'border-b-2 border-white' : 'border-0'
+                    }`}
+                  >
+                    <FaHome className="text-lg leading-lg text-white opacity-75" />
+                    <span className="ml-2">Home</span>
+                  </a>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/challenges">
+                  <a
+                    className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                      isActive('/challenges') ? 'border-b-2 border-white' : 'border-0'
+                    }`}
+                  >
+                    <FaCode className="text-lg leading-lg text-white opacity-75" />
+                    <span className="ml-2">Challenges</span>
+                  </a>
+                </Link>
+              </li>
+              {status === 'unauthenticated' && (
+                <li className="nav-item">
+                  <Link href="/login">
+                    <a
+                      className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                        isActive('/login') ? 'border-b-2 border-white' : 'border-0'
+                      }`}
+                    >
+                      <FiLogIn className="text-lg leading-lg text-white opacity-75" />
+                      <span className="ml-2">Login</span>
+                    </a>
+                  </Link>
+                </li>
+              )}
 
-      {status === 'unauthenticated' && (
-        <Menu.Item key="login" icon={<FiLogIn />}>
-          <Link href="/login">Login</Link>
-        </Menu.Item>
-      )}
-
-      {status === 'authenticated' && (
-        <>
-          <Menu.Item key="profile" icon={<CgProfile />}>
-            <Link href="/profile">{session.user.name}</Link>
-          </Menu.Item>
-          <Menu.Item key="logout" icon={<FiLogOut />}>
-            <Link href="/logout">Logout</Link>
-          </Menu.Item>
-        </>
-      )}
-    </Menu>
+              {status === 'authenticated' && (
+                <>
+                  <li className="nav-item">
+                    <Link href="/profile">
+                      <a
+                        className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                          isActive('/profile') ? 'border-b-2 border-white' : 'border-0'
+                        }`}
+                      >
+                        <CgProfile className="text-lg leading-lg text-white opacity-75" />
+                        <span className="ml-2">{session.user.name}</span>
+                      </a>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link href="/logout">
+                      <a
+                        className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                          isActive('/logout') ? 'border-b-2 border-white' : 'border-0'
+                        }`}
+                      >
+                        <FiLogOut className="text-lg leading-lg text-white opacity-75" />
+                        <span className="ml-2">Logout</span>
+                      </a>
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </>
   )
 }
 

@@ -64,8 +64,6 @@ const Login: NextPage = () => {
         return
       }
     } else {
-      console.log(status)
-
       router.push('/challenges')
       return
     }

@@ -65,10 +65,12 @@ const Create: NextPage = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="px-8 py-6 mt-4 w-full sm:w-2/3 text-center sm:text-left bg-white shadow-lg">
         {status === 'unauthenticated' && (
-          <div>
-            <h3 className="text-2xl font-bold text-center">Create challenge</h3>
+          <div className="text-center">
+            <p className="py-2 mb-4 text-center text-md tracking-wide text-red-600">
+              You must be logged in to create challenges
+            </p>
             <Link href="/login">
-              <a>Login</a>
+              <a className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</a>
             </Link>
           </div>
         )}

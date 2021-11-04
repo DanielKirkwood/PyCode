@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { FaCode, FaHome, FaBars } from 'react-icons/fa'
 import { FiLogIn, FiLogOut } from 'react-icons/fi'
 import { CgProfile } from 'react-icons/cg'
+import { MdOutlineCreate } from 'react-icons/md'
 
 function NavBar(): ReactElement {
   const { data: session, status } = useSession()
@@ -81,6 +82,18 @@ function NavBar(): ReactElement {
 
               {status === 'authenticated' && (
                 <>
+                  <li className="nav-item">
+                    <Link href="/challenges/create">
+                      <a
+                        className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
+                          isActive('/challenges/create') ? 'border-b-2 border-white' : 'border-0'
+                        }`}
+                      >
+                        <MdOutlineCreate className="text-lg leading-lg text-white opacity-75" />
+                        <span className="ml-2">Create Challenge</span>
+                      </a>
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link href="/profile">
                       <a

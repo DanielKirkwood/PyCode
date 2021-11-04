@@ -48,7 +48,7 @@ describe('Home', () => {
     expect(button).toHaveAttribute('href', '/login')
   })
 
-  it('renders challenge button if user signed in', () => {
+  it('renders create challenge button if user signed in', () => {
     const session = {
       expires: '1',
       user: { email: 'user@email.com', name: 'John Doe', image: 'url-to-image' },
@@ -60,6 +60,6 @@ describe('Home', () => {
 
     expect(button).toBeInTheDocument()
 
-    expect(button).toHaveAttribute('href', '/challenges')
+    expect(button).toHaveAttribute('href', '/challenges/create')
   })
 })

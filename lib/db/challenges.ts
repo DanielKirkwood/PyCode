@@ -35,6 +35,7 @@ export const insertOne = async (challenges: Collection, data: challengeData) => 
   try {
     const result = await challenges.insertOne({
       ...data,
+      verified: false,
       createdAt: new Date().toDateString(),
     })
     return result.insertedId

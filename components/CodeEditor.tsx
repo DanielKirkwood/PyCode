@@ -1,11 +1,21 @@
-import React, { useState } from 'react'
-import { Button, Divider, Typography } from 'antd'
-import { PlayCircleFilled } from '@ant-design/icons'
+import React, { Fragment, useState } from 'react'
 import dynamic from 'next/dynamic'
-import styles from '../styles/CodeEditor.module.css'
 
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
+import TestAccordion from './TestAccordion'
+
+interface TestCases {
+  inputs: {
+    inputName: string
+    inputValue: string
+  }[]
+  output: string
+}
+interface Props {
+  title: string
+  testCases: TestCases[]
+}
 
 const CodeMirror = dynamic(
   () => {
@@ -15,50 +25,38 @@ const CodeMirror = dynamic(
   { ssr: false }
 )
 
-export const CodeEditor = () => {
-  const [code, setCode] = useState('')
-  const [output, setOutput] = useState('')
+export const CodeEditor = ({ title, testCases }: Props) => {
+  const functionName = title.toLowerCase().replace(/ /g, '_')
+  let inputNames = ''
+  testCases[0].inputs.forEach((inputObj) => {
+    inputNames += `${inputObj.inputName}, `
+  })
+  inputNames = inputNames.substring(0, inputNames.length - 2)
+
+  const [code, setCode] = useState(`def ${functionName}(${inputNames}):`)
 
   const options = { lineNumbers: true, mode: 'python', theme: 'material', lineWrapping: true }
 
   const onCodeChange = (code: string) => setCode(code)
 
-  const executeCode = async (code: string) => {
-    const response = await fetch('/api/executeCode', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code: code }),
-    })
-    const data = await response.json()
-    console.log(data)
-
-    if (data.error) {
-      setOutput(data.error)
-      console.log('error')
-    } else {
-      setOutput(data.output)
-      console.log('success')
-    }
-  }
-
   return (
     CodeMirror && (
       <>
-        <CodeMirror onChange={onCodeChange} options={options} value={code} className={styles.editor} />
-        <Button
-          onClick={(e) => {
-            e.stopPropagation()
-            executeCode(code)
-          }}
-          shape="round"
-          icon={<PlayCircleFilled />}
-        >
-          Run Code
-        </Button>
-        <Divider />
-        <Typography.Text>{output}</Typography.Text>
+        <CodeMirror onChange={onCodeChange} options={options} value={code} className="my-3 text-lg" />
+
+        {testCases.map((test, index) => {
+          return (
+            <Fragment key={index}>
+              <TestAccordion
+                inputs={test.inputs}
+                output={test.output}
+                testNumber={index + 1}
+                fnName={functionName}
+                code={code}
+              />
+            </Fragment>
+          )
+        })}
       </>
     )
   )

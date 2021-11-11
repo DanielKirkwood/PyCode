@@ -4,6 +4,7 @@ import { signIn, useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { FaGithub } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
+import { TiTickOutline } from 'react-icons/ti'
 import { NextRouter, useRouter } from 'next/router'
 import { isEmail } from 'lib/auth/validate'
 
@@ -72,26 +73,14 @@ const Login: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       {!hidden && (
-        <div
-          className="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-2 py-3 shadow-md"
-          role="alert"
-        >
-          <div className="flex">
-            <div>
-              <p className="font-bold">Account created</p>
-              <p className="text-sm">Try logging in now</p>
-            </div>
-            <div className="py-1 px-4">
-              <svg
-                className="fill-current h-6 w-6 text-red-500"
-                role="button"
-                onClick={() => setHidden(true)}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <title>Close</title>
-                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-              </svg>
+        <div className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+          <div className="flex items-center justify-center w-12 bg-green-500">
+            <TiTickOutline className="w-6 h-6 text-white fill-current" />
+          </div>
+          <div className="px-4 py-2 -mx-3">
+            <div className="mx-3">
+              <span className="font-semibold text-green-500 dark:text-green-400">Success</span>
+              <p className="text-sm text-gray-600 dark:text-gray-200">Your account was registered!</p>
             </div>
           </div>
         </div>
@@ -113,7 +102,6 @@ const Login: NextPage = () => {
                 ref={emailInput}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
-              {/* <span className="text-xs tracking-wide text-red-600">Email field is required </span> */}
             </div>
             <div className="mt-4">
               <label className="block" htmlFor="password">

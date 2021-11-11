@@ -15,9 +15,7 @@
     "test.watch": "jest --watch"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
     "@next-auth/mongodb-adapter": "^0.0.2-next.285",
-    "antd": "^4.16.13",
     "argon2": "^0.28.2",
     "codemirror": "^5.63.1",
     "mongodb": "^4.1.3",

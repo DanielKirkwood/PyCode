@@ -49,7 +49,7 @@ const ChallengePage: NextPage = () => {
                 </div>
               </div>
               <div className="col-span-8 md:col-span-6">
-                <CodeEditor title={data.title} testCases={data.testCases} />
+                <CodeEditor title={data.title} testCases={data.testCases} challengeID={id} />
               </div>
             </div>
           </>

@@ -29,6 +29,7 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
     inputs.forEach((inputObj) => {
       inputValues += `${inputObj.inputValue}, `
     })
+    // TODO: Refactor code - must -2 from string to remove excess ", "
     inputValues = inputValues.substring(0, inputValues.length - 2)
 
     const codeToExecute = `${code}\nassert ${fnName}(${inputValues}) == ${output}`

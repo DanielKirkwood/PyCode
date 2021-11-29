@@ -10,6 +10,20 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 const MONGODB_DB = process.env.MONGODB_DB
 const NODE_ENV = process.env.NODE_ENV
 
+const getUser = async (email: string) => {
+  const dbClient = await clientPromise
+  const users = dbClient.db(process.env.MONGODB_DB).collection('users')
+  try {
+    const result = await users.findOne({
+      email: email,
+    })
+    return result
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
 const authHandler: NextApiHandler = async (req, res) =>
   NextAuth(req, res, {
     debug: NODE_ENV === 'development',
@@ -92,17 +106,26 @@ const authHandler: NextApiHandler = async (req, res) =>
       }),
     ],
     callbacks: {
-      jwt: ({ token, user }) => {
+      jwt({ token, user }) {
         // first time jwt callback is run, user object is available
         if (user) {
           token.id = user.id
         }
         return token
       },
-      session: ({ session, token }) => {
+      async session({ session, token }) {
         if (token) {
-          session.id = token.id
+          const data = await getUser(session.user.email)
+
+          session.user = {
+            id: data._id,
+            name: data.name,
+            email: data.email,
+            image: data.image,
+            role: data.role,
+          }
         }
+
         return session
       },
     },

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FaCode, FaHome, FaBars } from 'react-icons/fa'
 import { FiLogIn, FiLogOut } from 'react-icons/fi'
@@ -107,16 +107,15 @@ function NavBar(): ReactElement {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link href="/logout">
-                      <a
-                        className={`px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 ${
-                          isActive('/logout') ? 'border-b-2 border-white' : 'border-0'
-                        }`}
+                    <>
+                      <button
+                        onClick={() => signOut({ redirect: false })}
+                        className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75 border-0"
                       >
                         <FiLogOut className="text-lg leading-lg text-white opacity-75" />
                         <span className="ml-2">Logout</span>
-                      </a>
-                    </Link>
+                      </button>
+                    </>
                   </li>
                 </>
               )}

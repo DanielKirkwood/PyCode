@@ -4,6 +4,8 @@ import NavBar from '@/components/NavBar'
 import { IconContext } from 'react-icons'
 
 import '../styles/globals.css'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/material.css'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (

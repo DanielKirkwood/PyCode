@@ -1,38 +1,13 @@
-import React, { Fragment, ReactElement, useEffect, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { BsCheck } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
 
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/material.css'
-import TestAccordion from './TestAccordion'
+import SaveButton from '@/components/SaveButton'
+import TestAccordion from '@/components/TestAccordion'
 
-interface AutoSaveProps {
-  saving: SavingState
-}
+import useSWR, { useSWRConfig } from 'swr'
 
-const AutoSaveDisplay = ({ saving }: AutoSaveProps): ReactElement => {
-  let display
-  switch (saving) {
-    case SavingState.SAVING:
-      display = <em>saving...</em>
-      break
-    case SavingState.SAVED:
-      display = (
-        <>
-          <BsCheck /> <em>saved!</em>
-        </>
-      )
-      break
-    case SavingState.NOT_SAVED:
-      display = <em>not saved</em>
-    default:
-      display = <br />
-  }
-  return <div className="auto-save-display">{display}</div>
-}
-
-interface TestCases {
+interface TestCase {
   inputs: {
     inputName: string
     inputValue: string
@@ -41,7 +16,7 @@ interface TestCases {
 }
 interface Props {
   title: string
-  testCases: TestCases[]
+  testCases: TestCase[]
   challengeID: string | string[]
 }
 
@@ -49,6 +24,7 @@ enum SavingState {
   NOT_SAVED,
   SAVING,
   SAVED,
+  ERROR,
 }
 
 const CodeMirror = dynamic(
@@ -59,57 +35,87 @@ const CodeMirror = dynamic(
   { ssr: false }
 )
 
-export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
-  const { data: session } = useSession()
-  const functionName = title.toLowerCase().replace(/ /g, '_')
+function createFunctionName(title: string) {
+  return title.toLowerCase().replace(/ /g, '_')
+}
+
+function createBoilerplate(title: string, testCase: TestCase) {
+  const functionName = createFunctionName(title)
   let inputNames = ''
-  testCases[0].inputs.forEach((inputObj) => {
+  testCase.inputs.forEach((inputObj) => {
     inputNames += `${inputObj.inputName}, `
   })
   inputNames = inputNames.substring(0, inputNames.length - 2)
+  const boilerplate = `def ${functionName}(${inputNames}):`
+  return boilerplate
+}
 
-  const [code, setCode] = useState(`def ${functionName}(${inputNames}):`)
+export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
+  // controls user session
+  const { data: session, status } = useSession()
+
+  const { mutate } = useSWRConfig()
+  // state
+  const [code, setCode] = useState(() => {
+    const initialState = createBoilerplate(title, testCases[0])
+    return initialState
+  })
   const [saving, setSaving] = useState(SavingState.NOT_SAVED)
 
+  const fetcher = (...args) => fetch(...args).then((res) => res.json())
+  const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
+
+  // code mirror
   const options = { lineNumbers: true, mode: 'python', theme: 'material', lineWrapping: true }
+  function onCodeChange(newCode: string) {
+    setCode(newCode)
+  }
 
-  const onCodeChange = (code: string) => setCode(code)
+  async function onSave() {
+    mutate(`/api/${session.user.id}/${challengeID}`, { ...data, code: code }, false)
+    setSaving(SavingState.SAVING)
 
-  const DELAY = 5 // minutes
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      setSaving(SavingState.SAVING)
+    const response = await fetch(`/api/${session.user.id}/${challengeID}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: code }),
+    })
 
-      // call to api to save code
-      const response = await fetch(`/api/${session.user.id}/${challengeID}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: code,
-        }),
-      })
-
-      if (response.ok) {
-        // if successful
-        setSaving(SavingState.SAVED)
-      } else {
-        console.error('error saving code')
-        setSaving(SavingState.NOT_SAVED)
-      }
-    }, DELAY * 1000)
-    return () => {
-      clearTimeout(timer)
-      setSaving(SavingState.NOT_SAVED)
+    if (response.ok) {
+      setSaving(SavingState.SAVED)
+      mutate(`/api/${session.user.id}/${challengeID}`)
+      return
     }
-  })
+
+    setSaving(SavingState.NOT_SAVED)
+    mutate(`/api/${session.user.id}/${challengeID}`)
+    return
+  }
 
   return (
     CodeMirror && (
       <>
-        <CodeMirror onChange={onCodeChange} options={options} value={code} className="my-3 text-lg" />
-        <AutoSaveDisplay saving={saving} />
+        {data?.code && (
+          <>
+            {<CodeMirror onChange={onCodeChange} options={options} value={data.code} className="my-3 text-lg" />}
+            <SaveButton onClick={onSave} saving={saving} />
+          </>
+        )}
+        {data?.error && (
+          <>
+            {<CodeMirror onChange={onCodeChange} options={options} value={code} className="my-3 text-lg" />}
+            <SaveButton onClick={onSave} saving={saving} />
+          </>
+        )}
+        {!data && (
+          <>
+            {<CodeMirror onChange={onCodeChange} options={options} value={code} className="my-3 text-lg" />}
+            <SaveButton onClick={onSave} saving={SavingState.ERROR} />
+          </>
+        )}
+
         {testCases.map((test, index) => {
           return (
             <Fragment key={index}>
@@ -117,7 +123,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
                 inputs={test.inputs}
                 output={test.output}
                 testNumber={index + 1}
-                fnName={functionName}
+                fnName={createFunctionName(title)}
                 code={code}
               />
             </Fragment>

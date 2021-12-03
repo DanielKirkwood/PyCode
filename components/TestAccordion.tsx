@@ -42,16 +42,13 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
       body: JSON.stringify({ code: codeToExecute }),
     })
     const data = await response.json()
-    console.log(data)
 
     if (data.error) {
       setError(data.error)
-      console.log('error')
       setLoading(false)
     } else {
       setSuccess(true)
       setResult(data.output)
-      console.log('success')
       setLoading(false)
     }
   }

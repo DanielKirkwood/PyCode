@@ -50,7 +50,7 @@ export const deleteOne = async (challenges: Collection, id) => {
     const result = await challenges.deleteOne({ _id: ObjectId.createFromHexString(id) })
     return result.deletedCount
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return 0
   }
 }

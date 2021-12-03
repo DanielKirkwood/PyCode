@@ -27,7 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(document)
       break
     case 'PATCH':
+
       const result = await SaveOne(userChallengeData, userID.toString(), challengeID.toString(), req.body.code)
+
       if (result === null) {
         res.status(500).json({ error: 'error saving' })
         return

@@ -62,7 +62,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
   })
   const [saving, setSaving] = useState(SavingState.NOT_SAVED)
 
-  const fetcher = (...args) => fetch(...args).then((res) => res.json())
+  const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
   const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
 
   // code mirror

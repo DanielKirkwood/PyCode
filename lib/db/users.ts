@@ -38,7 +38,7 @@ export const getSaved = async (userChallengeData: Collection, userID: string, ch
 
 export const SaveOne = async (userChallengeData: Collection, userID: string, challengeID: string, code: string) => {
   try {
-    const result = await userChallengeData.updateOne(
+    await userChallengeData.updateOne(
       {
         user: ObjectId.createFromHexString(userID),
         challenge: ObjectId.createFromHexString(challengeID),
@@ -53,11 +53,7 @@ export const SaveOne = async (userChallengeData: Collection, userID: string, cha
       { upsert: true }
     )
 
-    if (result.modifiedCount === 1) {
-      return 1
-    }
-
-    return null
+    return true
   } catch (error) {
     console.error(error)
     return null

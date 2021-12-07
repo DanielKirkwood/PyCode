@@ -1,13 +1,14 @@
-import { deleteOne, getOne } from 'lib/db/challenges'
+import { deleteOne, getAllComments, getOne } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const dbClient = await clientPromise
   const challenges = dbClient.db(process.env.MONGODB_DB).collection('challenges')
+  const challengeComments = dbClient.db(process.env.MONGODB_DB).collection('challenge_comments')
 
   const {
-    query: { id },
+    query: { id, comments },
     method,
   } = req
   switch (method) {
@@ -15,13 +16,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const document = await getOne(challenges, id.toString())
       if (document === null) {
         res.status(500).json({ error: `could not get challenge with id ${id}` })
+        break
       }
-      res.status(200).json(document)
-      break
+
+      if (comments === 'true') {
+        // fetch comments
+        const commentCursor = await getAllComments(challengeComments, id.toString())
+        res.status(200).json({ challenge: document, comments: commentCursor })
+        break
+      } else {
+        res.status(200).json(document)
+        break
+      }
     case 'DELETE':
       const result = await deleteOne(challenges, id.toString())
       if (result === 0) {
         res.status(500).json({ error: `could not delete challenge with id ${id}` })
+        break
       }
       res.status(200).json({ message: `challenge with id ${id.toString} successfully deleted` })
       break
@@ -31,5 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       res.setHeader('Allow', ['GET', 'DELETE'])
       res.status(405).end(`Method ${method} Not Allowed`)
+      break
   }
 }

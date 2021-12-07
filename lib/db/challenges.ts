@@ -31,6 +31,18 @@ export const getOne = async (challenges: Collection, id: string) => {
   }
 }
 
+export const getAllComments = async (challengeComments: Collection, challengeID: string) => {
+  try {
+    if (!ObjectId.isValid(challengeID)) {
+      return { error: `Invalid challenge id: ${challengeID}` }
+    }
+    const result = challengeComments.find({ challenge: ObjectId.createFromHexString(challengeID) })
+    return result
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const insertOne = async (challenges: Collection, data: challengeData) => {
   try {
     const result = await challenges.insertOne({

@@ -43,6 +43,83 @@ export const getAllComments = async (challengeComments: Collection, challengeID:
   }
 }
 
+export const postComment = async (
+  challengeComments: Collection,
+  challengeID: string,
+  ownerID: string,
+  text: string
+) => {
+  try {
+    if (!ObjectId.isValid(challengeID)) {
+      return { error: `Invalid challenge id: ${challengeID}` }
+    }
+    if (!ObjectId.isValid(ownerID)) {
+      return { error: `Invalid owner id: ${ownerID}` }
+    }
+
+    const today = new Date()
+    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+    const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+
+    const result = await challengeComments.insertOne({
+      owner: ObjectId.createFromHexString(ownerID),
+      challenge: ObjectId.createFromHexString(challengeID),
+      body: text,
+      createdAt: date + ' ' + time,
+    })
+
+    return result
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const editComment = async (challengeComments: Collection, commentID: string, text: string) => {
+  try {
+    if (!ObjectId.isValid(commentID)) {
+      return { error: `Invalid comment id: ${commentID}` }
+    }
+
+    const result = await challengeComments.updateOne(
+      {
+        _id: ObjectId.createFromHexString(commentID),
+      },
+      {
+        $set: {
+          body: text,
+        },
+      }
+    )
+
+    if (result.modifiedCount === 1) {
+      return 1
+    }
+
+    return null
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const deleteComment = async (challengeComments: Collection, commentID: string) => {
+  try {
+    if (!ObjectId.isValid(commentID)) {
+      return { error: `Invalid comment id: ${commentID}` }
+    }
+
+    const result = await challengeComments.deleteOne({
+      _id: ObjectId.createFromHexString(commentID),
+    })
+
+    if (result.deletedCount === 1) {
+      return
+    }
+    return { error: 'comment could not be deleted' }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const insertOne = async (challenges: Collection, data: challengeData) => {
   try {
     const result = await challenges.insertOne({

@@ -1,4 +1,4 @@
-import { deleteOne, getAllComments, getOne } from 'lib/db/challenges'
+import { deleteOne, getAllComments, getOne, postComment } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -28,6 +28,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(200).json(document)
         break
       }
+    case 'POST':
+      const {
+        body: { text, owner },
+      } = req
+      if (!text) {
+        res.status(500).json({ error: 'could not post challenge' })
+        break
+      }
+
+      await postComment(challengeComments, id.toString(), owner.toString(), text)
+
+      res.status(200).json({ message: 'comment posted' })
+      break
     case 'DELETE':
       const result = await deleteOne(challenges, id.toString())
       if (result === 0) {
@@ -40,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (process.env.NODE_ENV === 'production') {
         dbClient.close()
       }
-      res.setHeader('Allow', ['GET', 'DELETE'])
+      res.setHeader('Allow', ['GET', 'DELETE', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
       break
   }

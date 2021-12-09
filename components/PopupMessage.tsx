@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { AnimationEvent } from 'react'
 import { TiTickOutline, TiTimes } from 'react-icons/ti'
 
 interface Props {
   body: string
   type: 'Success' | 'Error'
+  onAnimationEnd: (e: AnimationEvent<HTMLDivElement>) => void
 }
 
-const PopupMessage = ({ body, type }: Props) => {
+const PopupMessage = ({ onAnimationEnd, body, type }: Props) => {
   return (
-    <div className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <div
+      className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 animate-fade-in-down"
+      onAnimationEnd={onAnimationEnd}
+    >
       <div className={`flex items-center justify-center w-12 ${type === 'Success' ? 'bg-green-500' : 'bg-red-500'}`}>
         {type === 'Success' ? (
           <TiTickOutline className="w-6 h-6 text-white fill-current" />

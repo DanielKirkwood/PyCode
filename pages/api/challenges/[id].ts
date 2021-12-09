@@ -21,11 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (comments === 'true') {
         // fetch comments
-        const commentCursor = await getAllComments(challengeComments, id.toString())
-        res.status(200).json({ challenge: document, comments: commentCursor })
+        const allComments = await getAllComments(challengeComments, id.toString())
+        res.status(200).json({ challenge: document, comments: allComments })
         break
       } else {
-        res.status(200).json(document)
+        res.status(200).json({ challenge: document, comments: null })
         break
       }
     case 'POST':

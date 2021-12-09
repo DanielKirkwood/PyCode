@@ -7,21 +7,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const challengeComments = dbClient.db(process.env.MONGODB_DB).collection('challenge_comments')
 
   const { method } = req
-
-  let text: string, challengeID: string, ownerID: string, commentID: string
+  interface Owner {
+    ownerID: string
+    ownerName: string
+    ownerRole: string
+  }
+  let text: string, challengeID: string, commentID: string, owner: Owner
 
   switch (method) {
     case 'POST':
       text = req.body.text
       challengeID = req.body.challengeID
-      ownerID = req.body.ownerID
+      owner = {
+        ownerID: req.body.ownerID,
+        ownerName: req.body.ownerName,
+        ownerRole: req.body.ownerRole,
+      }
 
       if (!text) {
         res.status(500).json({ error: 'could not post challenge' })
         break
       }
 
-      await postComment(challengeComments, challengeID.toString(), ownerID.toString(), text)
+      await postComment(challengeComments, challengeID.toString(), text, owner)
 
       res.status(200).json({ message: 'comment posted' })
       break
@@ -34,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break
       }
 
-      const editedResult = await editComment(challengeComments, commentID.toString(), text)
+      const editedResult = await editComment(challengeComments, commentID, text)
 
       if (editedResult === null) {
         res.status(500).json({ error: 'could not edit challenge' })
@@ -48,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const deletedResult = await deleteComment(challengeComments, commentID.toString())
 
-      if (deletedResult.error) {
+      if (deletedResult.error !== null) {
         res.status(500).json({ error: 'error deleting comment' })
         break
       }

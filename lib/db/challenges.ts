@@ -8,6 +8,12 @@ interface challengeData {
   output: string
 }
 
+interface Owner {
+  ownerID: string
+  ownerName: string
+  ownerRole: string
+}
+
 export const getAll = async (challenges: Collection, limit = 50, skip = 0) => {
   try {
     const result = await challenges.find({}).skip(skip).limit(limit).toArray()
@@ -43,18 +49,13 @@ export const getAllComments = async (challengeComments: Collection, challengeID:
   }
 }
 
-export const postComment = async (
-  challengeComments: Collection,
-  challengeID: string,
-  ownerID: string,
-  text: string
-) => {
+export const postComment = async (challengeComments: Collection, challengeID: string, text: string, owner: Owner) => {
   try {
     if (!ObjectId.isValid(challengeID)) {
       return { error: `Invalid challenge id: ${challengeID}` }
     }
-    if (!ObjectId.isValid(ownerID)) {
-      return { error: `Invalid owner id: ${ownerID}` }
+    if (!ObjectId.isValid(owner.ownerID)) {
+      return { error: `Invalid owner id: ${owner.ownerID}` }
     }
 
     const today = new Date()
@@ -62,7 +63,9 @@ export const postComment = async (
     const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
 
     const result = await challengeComments.insertOne({
-      owner: ObjectId.createFromHexString(ownerID),
+      ownerID: ObjectId.createFromHexString(owner.ownerID),
+      ownerName: owner.ownerName,
+      ownerRole: owner.ownerRole,
       challenge: ObjectId.createFromHexString(challengeID),
       body: text,
       createdAt: date + ' ' + time,
@@ -112,7 +115,7 @@ export const deleteComment = async (challengeComments: Collection, commentID: st
     })
 
     if (result.deletedCount === 1) {
-      return
+      return { error: null }
     }
     return { error: 'comment could not be deleted' }
   } catch (error) {

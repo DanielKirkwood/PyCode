@@ -4,9 +4,9 @@ import { signIn, useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { FaGithub } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
-import { TiTickOutline } from 'react-icons/ti'
 import { NextRouter, useRouter } from 'next/router'
 import { isEmail } from 'lib/auth/validate'
+import PopupMessage from '@/components/PopupMessage'
 
 const Login: NextPage = () => {
   // get session to determine if user already signed in
@@ -21,7 +21,11 @@ const Login: NextPage = () => {
 
   // to display errors to user
   const [error, setError] = useState('')
-  const [hidden, setHidden] = useState(true)
+  const [messageVisible, setMessageVisible] = useState(false)
+  const [message, setMessage] = useState({
+    type: null,
+    body: '',
+  })
 
   // use ref for auto focusing email input on page load
   const emailInput = useRef(null)
@@ -32,7 +36,11 @@ const Login: NextPage = () => {
       router.push('/challenges')
     }
     if (router.query.message === 'account_created') {
-      setHidden(false)
+      setMessage({
+        type: 'Success',
+        body: 'Account created successfully - try logging in now',
+      })
+      setMessageVisible(true)
     }
     // focus on email input
     emailInput.current.focus()
@@ -72,18 +80,8 @@ const Login: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {!hidden && (
-        <div className="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <div className="flex items-center justify-center w-12 bg-green-500">
-            <TiTickOutline className="w-6 h-6 text-white fill-current" />
-          </div>
-          <div className="px-4 py-2 -mx-3">
-            <div className="mx-3">
-              <span className="font-semibold text-green-500 dark:text-green-400">Success</span>
-              <p className="text-sm text-gray-600 dark:text-gray-200">Your account was registered!</p>
-            </div>
-          </div>
-        </div>
+      {messageVisible && (
+        <PopupMessage type={message.type} body={message.body} onAnimationEnd={() => setMessageVisible(false)} />
       )}
       <div className="px-8 py-6 mt-4 text-center sm:text-left bg-white shadow-lg">
         <h3 className="text-2xl font-bold text-center">Sign in to your account</h3>

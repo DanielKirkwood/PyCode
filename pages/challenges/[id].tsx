@@ -4,6 +4,7 @@ import useSWR from 'swr'
 // import useWindowSize from 'lib/helpers/useWindowSize'
 import CodeEditor from '@/components/CodeEditor'
 import { useSession } from 'next-auth/react'
+import CommentCard from '@/components/CommentCard'
 
 const ChallengePage: NextPage = () => {
   // const size = useWindowSize()
@@ -19,8 +20,6 @@ const ChallengePage: NextPage = () => {
     fetcher
   )
 
-  console.log('useSWR data ->', data)
-
   return (
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full">
@@ -28,7 +27,7 @@ const ChallengePage: NextPage = () => {
         {!data && <h1>Loading...</h1>}
         {data && (
           <>
-            <h1 className="text-center text-2xl">{data.title}</h1>
+            <h1 className="text-center text-2xl">{data.challenge.title}</h1>
             <div className="grid grid-cols-12 gap-2 sm:gap-5">
               <div className="text-center col-span-4 md:col-span-6 flex flex-col w-10/12">
                 <div className="flex justify-between items-center mt-3">
@@ -37,7 +36,7 @@ const ChallengePage: NextPage = () => {
                   <hr className="w-full" />
                 </div>
                 <div>
-                  <h3 className="text-lg">{data.description}</h3>
+                  <h3 className="text-lg">{data.challenge.description}</h3>
                 </div>
                 <div className="flex justify-between items-center mt-3">
                   <hr className="w-full" />
@@ -46,20 +45,42 @@ const ChallengePage: NextPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg">Inputs:</h3>
-                  {data.testCases[0].inputs.map((input, index) => {
+                  {data.challenge.testCases[0].inputs.map((input, index) => {
                     return (
                       <h3 key={index} className="text-lg">
                         {input.inputName} = {input.inputValue}
                       </h3>
                     )
                   })}
-                  <h3 className="text-lg">Output: {data.testCases[0].output}</h3>
+                  <h3 className="text-lg">Output: {data.challenge.testCases[0].output}</h3>
                 </div>
               </div>
               <div className="col-span-8 md:col-span-6">
-                <CodeEditor title={data.title} testCases={data.testCases} challengeID={id} />
+                <CodeEditor title={data.challenge.title} testCases={data.challenge.testCases} challengeID={id} />
               </div>
             </div>
+            {data.comments !== null && (
+              <div className="flex justify-between items-center flex-col mt-3">
+                <div className="w-1/2">
+                  <h1 className="text-center text-2xl mb-5">Comments</h1>
+                  {data.comments.map((comment, i) => {
+                    return (
+                      <CommentCard
+                        commentID={comment._id}
+                        owner={{
+                          id: comment.ownerID,
+                          name: comment.ownerName,
+                          role: comment.ownerRole,
+                        }}
+                        body={comment.body}
+                        createdAt={comment.createdAt}
+                        key={i}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

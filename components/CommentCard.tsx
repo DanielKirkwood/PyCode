@@ -119,7 +119,7 @@ const CommentCard = ({ commentID, owner, body, createdAt }: Props) => {
       {messageVisible && (
         <PopupMessage type={message.type} body={message.body} onAnimationEnd={() => setMessageVisible(false)} />
       )}
-      <div className="relative grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
+      <div className="relative w-full grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
         <div className="relative flex gap-4">
           <div className="flex flex-col w-full">
             <div className="flex flex-row justify-between">

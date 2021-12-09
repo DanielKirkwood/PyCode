@@ -42,8 +42,11 @@ export const getAllComments = async (challengeComments: Collection, challengeID:
     if (!ObjectId.isValid(challengeID)) {
       return { error: `Invalid challenge id: ${challengeID}` }
     }
-    const result = challengeComments.find({ challenge: ObjectId.createFromHexString(challengeID) })
-    return result
+
+    const cursor = challengeComments.find({ challenge: ObjectId.createFromHexString(challengeID) })
+    const allComments = await cursor.toArray()
+
+    return allComments
   } catch (error) {
     console.error(error)
   }

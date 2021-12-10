@@ -1,4 +1,4 @@
-import { deleteOne, getAllComments, getOne, postComment } from 'lib/db/challenges'
+import { deleteOne, getOne, postComment } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const challengeComments = dbClient.db(process.env.MONGODB_DB).collection('challenge_comments')
 
   const {
-    query: { id, comments },
+    query: { id },
     method,
   } = req
   switch (method) {
@@ -19,15 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break
       }
 
-      if (comments === 'true') {
-        // fetch comments
-        const allComments = await getAllComments(challengeComments, id.toString())
-        res.status(200).json({ challenge: document, comments: allComments })
-        break
-      } else {
-        res.status(200).json({ challenge: document, comments: null })
-        break
-      }
+      res.status(200).json({ challenge: document })
+      break
+
     case 'POST':
       const {
         body: { text, owner },

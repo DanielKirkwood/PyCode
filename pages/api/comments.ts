@@ -1,4 +1,4 @@
-import { postComment, deleteComment, editComment } from 'lib/db/challenges'
+import { postComment, deleteComment, editComment, getAllComments } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -12,9 +12,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ownerName: string
     ownerRole: string
   }
-  let text: string, challengeID: string, commentID: string, owner: Owner
+  let text: string, commentID: string, owner: Owner
+  let challengeID: string | string[]
 
   switch (method) {
+    case 'GET':
+      challengeID = req.query.challengeID
+      const allComments = await getAllComments(challengeComments, challengeID.toString())
+      res.status(200).json({ comments: allComments })
+      break
     case 'POST':
       text = req.body.text
       challengeID = req.body.challengeID
@@ -67,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (process.env.NODE_ENV === 'production') {
         dbClient.close()
       }
-      res.setHeader('Allow', ['DELETE', 'POST', 'PATCH'])
+      res.setHeader('Allow', ['DELETE', 'POST', 'PATCH', 'GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
       break
   }

@@ -3,22 +3,15 @@ import { useRouter } from 'next/router'
 import useSWR from 'swr'
 // import useWindowSize from 'lib/helpers/useWindowSize'
 import CodeEditor from '@/components/CodeEditor'
-import { useSession } from 'next-auth/react'
-import CommentCard from '@/components/CommentCard'
+import { CommentList } from '@/components/CommentList'
 
 const ChallengePage: NextPage = () => {
   // const size = useWindowSize()
-  const { data: session } = useSession()
   const router = useRouter()
   const { id } = router.query
 
   const fetcher = (url) => fetch(url).then((res) => res.json())
-  const { data, error } = useSWR(
-    session?.user.role === 'admin' || session?.user.role === 'super-admin'
-      ? `/api/challenges/${id}?comments=true`
-      : `/api/challenges/${id}?comments=false`,
-    fetcher
-  )
+  const { data, error } = useSWR(`/api/challenges/${id}?comments=true`, fetcher)
 
   return (
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -59,28 +52,7 @@ const ChallengePage: NextPage = () => {
                 <CodeEditor title={data.challenge.title} testCases={data.challenge.testCases} challengeID={id} />
               </div>
             </div>
-            {data.comments !== null && (
-              <div className="flex justify-between items-center flex-col mt-3">
-                <div className="w-1/2">
-                  <h1 className="text-center text-2xl mb-5">Comments</h1>
-                  {data.comments.map((comment, i) => {
-                    return (
-                      <CommentCard
-                        commentID={comment._id}
-                        owner={{
-                          id: comment.ownerID,
-                          name: comment.ownerName,
-                          role: comment.ownerRole,
-                        }}
-                        body={comment.body}
-                        createdAt={comment.createdAt}
-                        key={i}
-                      />
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+            <CommentList challengeID={id} />
           </>
         )}
       </div>

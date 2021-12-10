@@ -12,9 +12,10 @@ interface Props {
   }
   body: string
   createdAt: string
+  onDelete: (id: string, setMessage: unknown, setMessageVisible: unknown) => void
 }
 
-const CommentCard = ({ commentID, owner, body, createdAt }: Props) => {
+const CommentCard = ({ commentID, owner, body, createdAt, onDelete }: Props) => {
   const [commentBody, setCommentBody] = useState(body)
   const [isEditable, setIsEditable] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -25,40 +26,9 @@ const CommentCard = ({ commentID, owner, body, createdAt }: Props) => {
   const [messageVisible, setMessageVisible] = useState(false)
 
   const { data: session } = useSession()
-  console.log('session ->', session)
 
   const onEditButtonClick = () => {
     setIsEditable(true)
-  }
-
-  const onDeleteButtonClick = async () => {
-    const response = await fetch('/api/comments/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'DELETE',
-      body: JSON.stringify({
-        commentID: commentID,
-      }),
-    })
-
-    if (!response.ok) {
-      // error deleting post
-      setMessage({
-        type: 'Error',
-        body: 'Error deleting comment - try again later',
-      })
-      setMessageVisible(true)
-      return
-    }
-
-    setMessage({
-      type: 'Success',
-      body: 'Comment successfully deleted',
-    })
-    setMessageVisible(true)
-    return
   }
 
   const onFormCancel = () => {
@@ -127,7 +97,10 @@ const CommentCard = ({ commentID, owner, body, createdAt }: Props) => {
               {session?.user.id === owner.id && (
                 <div>
                   <FaEdit onClick={onEditButtonClick} className="text-sm text-gray-700 mx-1 hover:text-blue-500" />
-                  <FaTrash onClick={onDeleteButtonClick} className="text-sm text-gray-700 mx-1 hover:text-red-500" />
+                  <FaTrash
+                    onClick={() => onDelete(commentID, setMessage, setMessageVisible)}
+                    className="text-sm text-gray-700 mx-1 hover:text-red-500"
+                  />
                 </div>
               )}
             </div>
@@ -158,7 +131,7 @@ const CommentCard = ({ commentID, owner, body, createdAt }: Props) => {
             <button
               type="button"
               onClick={onFormCancel}
-              className="px-6 py-2 mt-4 text-white bg-red-600 rounded-lg hover:bg-red-900"
+              className="px-6 py-2 mt-4 mx-2 text-white bg-red-600 rounded-lg hover:bg-red-900"
             >
               Cancel
             </button>

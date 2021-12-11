@@ -8,11 +8,8 @@ interface Props {
 }
 
 export const CommentList = ({ challengeID }: Props) => {
-  // const { mutate } = useSWRConfig()
   const fetcher = (url) => fetch(url).then((res) => res.json())
   const { data, mutate } = useSWR(`/api/comments?challengeID=${challengeID}`, fetcher)
-
-  console.log(data)
 
   const { data: session } = useSession()
 
@@ -101,6 +98,68 @@ export const CommentList = ({ challengeID }: Props) => {
     return
   }
 
+  const onEditSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    commentID: string,
+    originalBody: string,
+    newBody: string,
+    setMessage,
+    setMessageVisible,
+    onFormCancel,
+    setIsEditable
+  ) => {
+    e.preventDefault()
+    if (originalBody.normalize() === newBody.normalize()) {
+      // the edited comment has no changes from original so cancel edit
+      onFormCancel()
+      setMessage({
+        type: 'Error',
+        body: 'No changes detected',
+      })
+      setMessageVisible(true)
+      return
+    }
+
+    mutate(
+      {
+        ...data,
+        comments: data.comments.map((comment) => (comment._id === commentID ? { ...comment, body: newBody } : comment)),
+      },
+      false
+    )
+    const response = await fetch('/api/comments/', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        text: newBody,
+        commentID: commentID,
+      }),
+    })
+
+    if (!response.ok) {
+      onFormCancel()
+      setMessage({
+        type: 'Error',
+        body: 'Error editing comment - try again later',
+      })
+      setMessageVisible(true)
+      mutate()
+      return
+    }
+
+    setIsEditable(false)
+    setMessage({
+      type: 'Success',
+      body: 'Comment edited successfully',
+    })
+    setMessageVisible(true)
+    mutate()
+    return
+  }
+
   return (
     <div className="flex justify-between items-center flex-col ">
       <div className="flex justify-between items-center flex-col mt-3 px-8 py-6 bg-white shadow-lg w-full lg:w-1/2 ">
@@ -110,6 +169,7 @@ export const CommentList = ({ challengeID }: Props) => {
             data.comments.map((comment, i) => {
               return (
                 <CommentCard
+                  onEditSubmit={onEditSubmit}
                   onDelete={onDelete}
                   commentID={comment._id}
                   owner={{

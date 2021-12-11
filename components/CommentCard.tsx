@@ -13,12 +13,21 @@ interface Props {
   body: string
   createdAt: string
   onDelete: (id: string, setMessage: unknown, setMessageVisible: unknown) => void
+  onEditSubmit: (
+    e: React.FormEvent<HTMLFormElement>,
+    commentID: string,
+    originalBody: string,
+    newBody: string,
+    setMessage: unknown,
+    setMessageVisible: unknown,
+    onFormCancel: unknown,
+    setIsEditable: unknown
+  ) => void
 }
 
-const CommentCard = ({ commentID, owner, body, createdAt, onDelete }: Props) => {
+const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit }: Props) => {
   const [commentBody, setCommentBody] = useState(body)
   const [isEditable, setIsEditable] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState({
     type: null,
     body: '',
@@ -36,53 +45,53 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete }: Props) => 
     setIsEditable(false)
   }
 
-  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    if (body.normalize() === commentBody.normalize()) {
-      // the edited comment has no changes from original so cancel edit
-      setIsLoading(false)
-      onFormCancel()
-      setMessage({
-        type: 'Error',
-        body: 'No changes detected',
-      })
-      setMessageVisible(true)
-      return
-    }
+  // const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault()
+  //   setIsLoading(true)
+  //   if (body.normalize() === commentBody.normalize()) {
+  //     // the edited comment has no changes from original so cancel edit
+  //     setIsLoading(false)
+  //     onFormCancel()
+  //     setMessage({
+  //       type: 'Error',
+  //       body: 'No changes detected',
+  //     })
+  //     setMessageVisible(true)
+  //     return
+  //   }
 
-    const response = await fetch('/api/comments/', {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        text: commentBody,
-        commentID: commentID,
-      }),
-    })
+  //   const response = await fetch('/api/comments/', {
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     method: 'PATCH',
+  //     body: JSON.stringify({
+  //       text: commentBody,
+  //       commentID: commentID,
+  //     }),
+  //   })
 
-    if (!response.ok) {
-      setIsLoading(false)
-      onFormCancel()
-      setMessage({
-        type: 'Error',
-        body: 'Error editing comment - try again later',
-      })
-      setMessageVisible(true)
-      return
-    }
+  //   if (!response.ok) {
+  //     setIsLoading(false)
+  //     onFormCancel()
+  //     setMessage({
+  //       type: 'Error',
+  //       body: 'Error editing comment - try again later',
+  //     })
+  //     setMessageVisible(true)
+  //     return
+  //   }
 
-    setIsLoading(false)
-    setIsEditable(false)
-    setMessage({
-      type: 'Success',
-      body: 'Comment edited successfully',
-    })
-    setMessageVisible(true)
-    return
-  }
+  //   setIsLoading(false)
+  //   setIsEditable(false)
+  //   setMessage({
+  //     type: 'Success',
+  //     body: 'Comment edited successfully',
+  //   })
+  //   setMessageVisible(true)
+  //   return
+  // }
 
   return (
     <>
@@ -107,16 +116,12 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete }: Props) => 
             <p className="text-gray-500 text-sm">{createdAt}</p>
           </div>
         </div>
-        {isLoading && (
-          <div className="flex flex-1 flex-col gap-3">
-            <div className="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-            <div className="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-            <div className="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-            <div className="bg-gray-200 w-full animate-pulse h-3 rounded-2xl"></div>
-          </div>
-        )}
-        {isEditable && !isLoading && (
-          <form onSubmit={onFormSubmit}>
+        {isEditable && (
+          <form
+            onSubmit={(e) =>
+              onEditSubmit(e, commentID, body, commentBody, setMessage, setMessageVisible, onFormCancel, setIsEditable)
+            }
+          >
             <textarea
               rows={3}
               id="comment"
@@ -137,7 +142,7 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete }: Props) => 
             </button>
           </form>
         )}
-        {!isEditable && !isLoading && <p className="-mt-4 text-gray-500">{commentBody}</p>}
+        {!isEditable && <p className="-mt-4 text-gray-500">{commentBody}</p>}
       </div>
     </>
   )

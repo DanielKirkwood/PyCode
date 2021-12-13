@@ -140,12 +140,49 @@ export const insertOne = async (challenges: Collection, data: challengeData) => 
   }
 }
 
-export const deleteOne = async (challenges: Collection, id) => {
+export const deleteOne = async (challenges: Collection, id: string) => {
   try {
     const result = await challenges.deleteOne({ _id: ObjectId.createFromHexString(id) })
     return result.deletedCount
   } catch (error) {
     console.error(error)
     return 0
+  }
+}
+
+export const verifyChallenge = async (
+  challenges: Collection,
+  challengeID: string,
+  verifiedBy: string,
+  isVerified: boolean
+) => {
+  try {
+    if (!ObjectId.isValid(verifiedBy)) {
+      return null
+    }
+
+    if (!ObjectId.isValid(challengeID)) {
+      return null
+    }
+
+    const result = await challenges.updateOne(
+      {
+        _id: ObjectId.createFromHexString(challengeID),
+      },
+      {
+        $set: {
+          verified: isVerified,
+          verifiedBy: ObjectId.createFromHexString(verifiedBy),
+        },
+      }
+    )
+
+    if (result.modifiedCount === 1) {
+      return 1
+    }
+
+    return null
+  } catch (error) {
+    console.error(error)
   }
 }

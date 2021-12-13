@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import useSWR from 'swr'
+import Checkbox from './Checkbox'
 import CommentCard from './CommentCard'
 
 interface Props {
@@ -14,6 +15,7 @@ export const CommentList = ({ challengeID }: Props) => {
   const { data: session } = useSession()
 
   const [comment, setComment] = useState('')
+  const [isChecked, setIsChecked] = useState(false)
 
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -160,6 +162,10 @@ export const CommentList = ({ challengeID }: Props) => {
     return
   }
 
+  const handleCheckboxToggle = () => {
+    setIsChecked(!isChecked)
+  }
+
   return (
     <div className="flex justify-between items-center flex-col ">
       <div className="flex justify-between items-center flex-col mt-3 px-8 py-6 bg-white shadow-lg w-full lg:w-1/2 ">
@@ -193,9 +199,12 @@ export const CommentList = ({ challengeID }: Props) => {
                 value={comment}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 bg-gray-100"
               />
-              <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
-                Comment
-              </button>
+              <div className="flex justify-between items-center mt-3">
+                <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
+                  Comment
+                </button>
+                <Checkbox text="Verify" value={isChecked} onChange={handleCheckboxToggle} />
+              </div>
             </form>
           </div>
         </div>

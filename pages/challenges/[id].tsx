@@ -11,7 +11,7 @@ const ChallengePage: NextPage = () => {
   const { id } = router.query
 
   const fetcher = (url) => fetch(url).then((res) => res.json())
-  const { data, error } = useSWR(`/api/challenges/${id}?comments=true`, fetcher)
+  const { data, error } = useSWR(`/api/challenges/${id}`, fetcher)
 
   return (
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">

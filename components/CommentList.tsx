@@ -6,16 +6,17 @@ import CommentCard from './CommentCard'
 
 interface Props {
   challengeID: string | string[]
+  isVerified: boolean
 }
 
-export const CommentList = ({ challengeID }: Props) => {
+export const CommentList = ({ challengeID, isVerified }: Props) => {
   const fetcher = (url) => fetch(url).then((res) => res.json())
   const { data, mutate } = useSWR(`/api/comments?challengeID=${challengeID}`, fetcher)
 
   const { data: session } = useSession()
 
   const [comment, setComment] = useState('')
-  const [isChecked, setIsChecked] = useState(false)
+  const [isChecked, setIsChecked] = useState(isVerified)
 
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -162,8 +163,25 @@ export const CommentList = ({ challengeID }: Props) => {
     return
   }
 
-  const handleCheckboxToggle = () => {
+  const handleCheckboxToggle = async () => {
+    const response = await fetch(`/api/challenges/${challengeID}?verified=${!isChecked}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        verifiedBy: session.user.id,
+      }),
+    })
+
+    if (!response.ok) {
+      console.error('could not edit verified status')
+      return
+    }
+
     setIsChecked(!isChecked)
+    return
   }
 
   return (
@@ -203,7 +221,10 @@ export const CommentList = ({ challengeID }: Props) => {
                 <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
                   Comment
                 </button>
-                <Checkbox text="Verify" value={isChecked} onChange={handleCheckboxToggle} />
+                {session.user.role === 'admin' ||
+                  (session.user.role === 'super-admin' && (
+                    <Checkbox onClick={handleCheckboxToggle} text="Verify" value={isChecked} />
+                  ))}
               </div>
             </form>
           </div>

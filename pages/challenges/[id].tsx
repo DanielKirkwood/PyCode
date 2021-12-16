@@ -52,7 +52,7 @@ const ChallengePage: NextPage = () => {
                 <CodeEditor title={data.challenge.title} testCases={data.challenge.testCases} challengeID={id} />
               </div>
             </div>
-            <CommentList challengeID={id} />
+            <CommentList challengeID={id} isVerified={data.challenge.verified} />
           </>
         )}
       </div>

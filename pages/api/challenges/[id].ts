@@ -30,8 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const editedResult = await verifyChallenge(challenges, id.toString(), verifiedBy, verifiedStatus)
 
-        console.log(editedResult)
-
         if (editedResult === null) {
           res.status(500).json({ error: 'could not edit verified status' })
           break

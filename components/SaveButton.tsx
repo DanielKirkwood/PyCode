@@ -39,8 +39,7 @@ const SaveButton = ({ saving, onClick }: SaveButtonProps): ReactElement => {
   return (
     <button
       onClick={onClick}
-      className="hover:underline border-blue-400 border-2 text-black
-               font-bold rounded-lg my-3 py-2 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+      className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 hover:underline border-2 my-3 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
     >
       {display}
     </button>

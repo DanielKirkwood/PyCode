@@ -34,7 +34,7 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
 
     const codeToExecute = `${code}\nassert ${fnName}(${inputValues}) == ${output}`
 
-    const response = await fetch('/api/executeCode', {
+    const response = await fetch('/api/code/execute', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

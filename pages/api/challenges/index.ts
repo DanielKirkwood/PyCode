@@ -13,9 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const skip = !req.query.skip ? 0 : req.query.skip
 
       const documents = await getAll(challenges, parseInt(limit as string, 10), parseInt(skip as string, 10))
-      if (process.env.NODE_ENV === 'production') {
-        dbClient.close()
-      }
+
       if (documents === null) {
         res.status(500).json({ error: 'error getting challenges ' })
       }
@@ -23,18 +21,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break
     case 'POST':
       const documentId = await insertOne(challenges, req.body)
-      if (process.env.NODE_ENV === 'production') {
-        dbClient.close()
-      }
+
       if (documentId === null) {
         res.status(500).json({ error: 'could not insert challenge' })
       }
       res.status(200).json({ message: `Successfully added challenge ${documentId}`, insertId: documentId })
       break
     default:
-      if (process.env.NODE_ENV === 'production') {
-        dbClient.close()
-      }
       res.setHeader('Allow', ['GET', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }

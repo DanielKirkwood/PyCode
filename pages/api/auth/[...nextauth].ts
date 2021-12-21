@@ -80,9 +80,6 @@ const authHandler: NextApiHandler = async (req, res) =>
           const user = await db.collection('users').findOne({ email: credentials.email })
 
           if (!user) {
-            if (NODE_ENV !== 'development') {
-              dbClient.close()
-            }
             console.error('No User with that email')
             return null
           }
@@ -90,16 +87,11 @@ const authHandler: NextApiHandler = async (req, res) =>
           const checkPassword = await verifyPassword(credentials.password, user.password)
 
           if (!checkPassword) {
-            if (NODE_ENV !== 'development') {
-              dbClient.close()
-            }
             console.error("Password doesn't match")
             return null
           }
 
-          if (NODE_ENV !== 'development') {
-            dbClient.close()
-          }
+
 
           return { email: user.email, name: user.name, image: user.image, role: user.role }
         },

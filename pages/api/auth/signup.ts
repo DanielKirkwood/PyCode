@@ -3,7 +3,6 @@ import clientPromise from 'lib/db/mongodb'
 import { hashPassword } from 'lib/auth/auth'
 
 const MONGODB_DB = process.env.MONGODB_DB
-const NODE_ENV = process.env.NODE_ENV
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   // only accept post request to this endpoint
@@ -39,9 +38,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (checkExisting) {
     res.status(422).json({ message: `User with email: ${email} already exists` })
-    if (NODE_ENV !== 'development') {
-      dbClient.close()
-    }
+
     return
   }
 
@@ -55,9 +52,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   })
 
   res.status(201).json({ message: 'User created', ...status })
-  if (NODE_ENV !== 'development') {
-    dbClient.close()
-  }
 }
 
 export default handler

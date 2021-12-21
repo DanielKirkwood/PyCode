@@ -1,5 +1,5 @@
 // middleware.db.ts
-// attaches databse and client to request object
+// attaches database and client to request object
 
 import clientPromise from 'lib/db/mongodb'
 

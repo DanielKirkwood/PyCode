@@ -37,9 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json({ message: `challenge with id ${challengeID.toString} successfully saved` })
       break
     default:
-      if (process.env.NODE_ENV === 'production') {
-        dbClient.close()
-      }
+
       res.setHeader('Allow', ['GET', 'PATCH'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }

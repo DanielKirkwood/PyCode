@@ -1,11 +1,17 @@
 import { ObjectId } from 'mongodb'
 import { Collection } from 'mongodb'
 
+interface TestCase {
+  inputs: {
+    inputName: string
+    inputValue: string
+  }[]
+  output: string
+}
 interface challengeData {
   title: string
   description: string
-  input: string
-  output: string
+  testCases: TestCase[]
 }
 
 interface Owner {
@@ -126,10 +132,11 @@ export const deleteComment = async (challengeComments: Collection, commentID: st
   }
 }
 
-export const insertOne = async (challenges: Collection, data: challengeData) => {
+export const insertOne = async (challenges: Collection, ownerID: string, challengeData: challengeData) => {
   try {
     const result = await challenges.insertOne({
-      ...data,
+      ...challengeData,
+      owner: ObjectId.createFromHexString(ownerID),
       verified: false,
       createdAt: new Date().toDateString(),
     })

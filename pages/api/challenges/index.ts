@@ -20,7 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(200).json(documents)
       break
     case 'POST':
-      const documentId = await insertOne(challenges, req.body)
+      const challengeData = {
+        title: req.body.title,
+        description: req.body.description,
+        testCases: req.body.testCases,
+      }
+      const documentId = await insertOne(challenges, req.body.owner, challengeData)
 
       if (documentId === null) {
         res.status(500).json({ error: 'could not insert challenge' })

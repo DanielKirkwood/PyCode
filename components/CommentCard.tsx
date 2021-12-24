@@ -45,54 +45,6 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit
     setIsEditable(false)
   }
 
-  // const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault()
-  //   setIsLoading(true)
-  //   if (body.normalize() === commentBody.normalize()) {
-  //     // the edited comment has no changes from original so cancel edit
-  //     setIsLoading(false)
-  //     onFormCancel()
-  //     setMessage({
-  //       type: 'Error',
-  //       body: 'No changes detected',
-  //     })
-  //     setMessageVisible(true)
-  //     return
-  //   }
-
-  //   const response = await fetch('/api/comments/', {
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     method: 'PATCH',
-  //     body: JSON.stringify({
-  //       text: commentBody,
-  //       commentID: commentID,
-  //     }),
-  //   })
-
-  //   if (!response.ok) {
-  //     setIsLoading(false)
-  //     onFormCancel()
-  //     setMessage({
-  //       type: 'Error',
-  //       body: 'Error editing comment - try again later',
-  //     })
-  //     setMessageVisible(true)
-  //     return
-  //   }
-
-  //   setIsLoading(false)
-  //   setIsEditable(false)
-  //   setMessage({
-  //     type: 'Success',
-  //     body: 'Comment edited successfully',
-  //   })
-  //   setMessageVisible(true)
-  //   return
-  // }
-
   return (
     <>
       {messageVisible && (

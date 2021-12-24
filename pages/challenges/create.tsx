@@ -35,7 +35,7 @@ const Create: NextPage = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        owner: session.user.email,
+        owner: session.user.id,
         title,
         description,
         testCases,

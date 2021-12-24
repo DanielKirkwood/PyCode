@@ -4,6 +4,7 @@ import useSWR from 'swr'
 // import useWindowSize from 'lib/helpers/useWindowSize'
 import CodeEditor from '@/components/CodeEditor'
 import { CommentList } from '@/components/CommentList'
+import { useSession } from 'next-auth/react'
 
 const ChallengePage: NextPage = () => {
   // const size = useWindowSize()
@@ -12,6 +13,8 @@ const ChallengePage: NextPage = () => {
 
   const fetcher = (url) => fetch(url).then((res) => res.json())
   const { data, error } = useSWR(`/api/challenges/${id}`, fetcher)
+
+  const { data: session } = useSession()
 
   return (
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -52,7 +55,11 @@ const ChallengePage: NextPage = () => {
                 <CodeEditor title={data.challenge.title} testCases={data.challenge.testCases} challengeID={id} />
               </div>
             </div>
-            <CommentList challengeID={id} isVerified={data.challenge.verified} />
+            {(session?.user.role === 'admin' ||
+              session?.user.role === 'super-admin' ||
+              data.challenge.owner === session?.user.id) && (
+              <CommentList challengeID={id} isVerified={data.challenge.verified} />
+            )}
           </>
         )}
       </div>

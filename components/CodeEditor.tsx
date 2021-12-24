@@ -106,8 +106,6 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
     const data = await response.json()
 
     if (data.success === true) {
-      console.log('messages -> ', data.payload.messages)
-
       setLinterOutput(data.payload.messages)
     }
   }

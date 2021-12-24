@@ -61,6 +61,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
     return initialState
   })
   const [saving, setSaving] = useState(SavingState.NOT_SAVED)
+  const [linterOutput, setLinterOutput] = useState([])
 
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
   const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
@@ -94,6 +95,21 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
     return
   }
 
+  async function lintCode() {
+    const response = await fetch('/api/code?execute=false', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: code }),
+    })
+    const data = await response.json()
+
+    if (data.success === true) {
+      setLinterOutput(data.payload.messages)
+    }
+  }
+
   return (
     CodeMirror && (
       <>
@@ -115,6 +131,25 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
             <SaveButton onClick={onSave} saving={SavingState.ERROR} />
           </>
         )}
+
+        <button
+          onClick={lintCode}
+          className="ml-4 px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 hover:underline border-2 my-3 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+        >
+          Check Code Style
+        </button>
+
+        {linterOutput &&
+          linterOutput.map((message, index) => {
+            return (
+              <Fragment key={index}>
+                <p className="text-red-600">
+                  <span className="font-bold">{message.messageID} - </span>
+                  {message.message} on line {message.line}
+                </p>
+              </Fragment>
+            )
+          })}
 
         {testCases.map((test, index) => {
           return (

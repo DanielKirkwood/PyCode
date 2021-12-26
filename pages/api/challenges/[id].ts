@@ -14,11 +14,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       const document = await getOne(challenges, id.toString())
       if (document === null) {
-        res.status(500).json({ error: `could not get challenge with id ${id}` })
+        res.status(500).json({
+          success: false,
+          payload: {
+            error: {
+              code: 500,
+              message: `Could not get challenge with id ${id}.`,
+            },
+          },
+          error: {
+            code: 500,
+            message: `Could not get challenge with id ${id}.`,
+          },
+        })
         break
       }
 
-      res.status(200).json({ challenge: document })
+      res.status(200).json({
+        success: true,
+        payload: {
+          message: `Challenge with id ${id} retrieved successfully.`,
+          challenge: document,
+        },
+      })
       break
     case 'PATCH':
       if (verified) {
@@ -31,22 +49,68 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const editedResult = await verifyChallenge(challenges, id.toString(), verifiedBy, verifiedStatus)
 
         if (editedResult === null) {
-          res.status(500).json({ error: 'could not edit verified status' })
+          res.status(500).json({
+            success: false,
+            payload: {
+              error: {
+                code: 500,
+                message: 'Could not edit verified status.',
+              },
+            },
+            error: {
+              code: 500,
+              message: 'Could not edit verified status.',
+            },
+          })
           break
         }
 
-        res.status(200).json({ message: 'verified status edited' })
+        res.status(200).json({
+          success: true,
+          payload: {
+            message: 'Verified status edited successfully.',
+          },
+        })
         break
       }
-      res.status(200).json({ message: 'completed' })
+      res.status(500).json({
+        success: false,
+        payload: {
+          error: {
+            code: 500,
+            message: 'Verified query param not provided.',
+          },
+        },
+        error: {
+          code: 500,
+          message: 'Verified query param not provided.',
+        },
+      })
       break
     case 'DELETE':
       const result = await deleteOne(challenges, id.toString())
       if (result === 0) {
-        res.status(500).json({ error: `could not delete challenge with id ${id}` })
+        res.status(500).json({
+          success: false,
+          payload: {
+            error: {
+              code: 500,
+              message: `Could not delete challenge with id ${id}.`,
+            },
+          },
+          error: {
+            code: 500,
+            message: `Could not delete challenge with id ${id}.`,
+          },
+        })
         break
       }
-      res.status(200).json({ message: `challenge with id ${id.toString} successfully deleted` })
+      res.status(200).json({
+        success: true,
+        payload: {
+          message: `Challenge with id ${id.toString} successfully deleted.`,
+        },
+      })
       break
     default:
 

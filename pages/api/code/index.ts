@@ -30,10 +30,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const content = await response.json()
 
           if (content.run.code != 0) {
-            res.status(200).json({ error: content.run.output })
+            res.status(200).json({
+              success: true,
+              payload: {
+                output: {
+                  error: true,
+                  message: content.run.output,
+                },
+              },
+            })
             break
           } else {
-            res.status(200).json({ output: content.run.output })
+            res.status(200).json({
+              success: true,
+              payload: {
+                output: {
+                  error: false,
+                  message: content.run.output,
+                },
+              },
+            })
             break
           }
         } else if (execute === 'false') {

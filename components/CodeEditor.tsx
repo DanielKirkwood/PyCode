@@ -65,6 +65,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
 
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
   const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
+  console.log('CodeEditor useSWR data ->', data)
 
   // code mirror
   const options = { lineNumbers: true, mode: 'python', theme: 'material', lineWrapping: true }
@@ -73,7 +74,19 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
   }
 
   async function onSave() {
-    mutate(`/api/${session.user.id}/${challengeID}`, { ...data, code: code }, false)
+    mutate(
+      `/api/${session.user.id}/${challengeID}`,
+      {
+        ...data,
+        payload: {
+          document: {
+            ...data.payload.document,
+            code: code,
+          },
+        },
+      },
+      false
+    )
     setSaving(SavingState.SAVING)
 
     const response = await fetch(`/api/${session.user.id}/${challengeID}`, {
@@ -113,9 +126,16 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
   return (
     CodeMirror && (
       <>
-        {data?.code && (
+        {data?.payload?.document.code && (
           <>
-            {<CodeMirror onChange={onCodeChange} options={options} value={data.code} className="my-3 text-lg" />}
+            {
+              <CodeMirror
+                onChange={onCodeChange}
+                options={options}
+                value={data.payload.document.code}
+                className="my-3 text-lg"
+              />
+            }
             <SaveButton onClick={onSave} saving={saving} />
           </>
         )}

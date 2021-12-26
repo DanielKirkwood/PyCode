@@ -43,13 +43,16 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
     })
     const data = await response.json()
 
-    if (data.error) {
-      setError(data.error)
+    if (data.success && data.payload.output.error) {
+      setError(data.payload.output.message)
       setLoading(false)
-    } else {
+      return
+    }
+    if (data.success && !data.payload.output.error) {
       setSuccess(true)
-      setResult(data.output)
+      setResult(data.payload.output.message)
       setLoading(false)
+      return
     }
   }
 

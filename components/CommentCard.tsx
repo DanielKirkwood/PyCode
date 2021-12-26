@@ -1,7 +1,6 @@
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import { FaTrash, FaEdit } from 'react-icons/fa'
-import PopupMessage from './PopupMessage'
 
 interface Props {
   commentID: string
@@ -12,14 +11,13 @@ interface Props {
   }
   body: string
   createdAt: string
-  onDelete: (id: string, setMessage: unknown, setMessageVisible: unknown) => void
+  onDelete: (id: string) => void
   onEditSubmit: (
     e: React.FormEvent<HTMLFormElement>,
     commentID: string,
     originalBody: string,
     newBody: string,
-    setMessage: unknown,
-    setMessageVisible: unknown,
+
     onFormCancel: unknown,
     setIsEditable: unknown
   ) => void
@@ -28,11 +26,6 @@ interface Props {
 const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit }: Props) => {
   const [commentBody, setCommentBody] = useState(body)
   const [isEditable, setIsEditable] = useState(false)
-  const [message, setMessage] = useState({
-    type: null,
-    body: '',
-  })
-  const [messageVisible, setMessageVisible] = useState(false)
 
   const { data: session } = useSession()
 
@@ -47,9 +40,6 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit
 
   return (
     <>
-      {messageVisible && (
-        <PopupMessage type={message.type} body={message.body} onAnimationEnd={() => setMessageVisible(false)} />
-      )}
       <div className="relative w-full grid grid-cols-1 gap-4 p-4 mb-8 border rounded-lg bg-white shadow-lg">
         <div className="relative flex gap-4">
           <div className="flex flex-col w-full">
@@ -59,7 +49,7 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit
                 <div>
                   <FaEdit onClick={onEditButtonClick} className="text-sm text-gray-700 mx-1 hover:text-blue-500" />
                   <FaTrash
-                    onClick={() => onDelete(commentID, setMessage, setMessageVisible)}
+                    onClick={() => onDelete(commentID)}
                     className="text-sm text-gray-700 mx-1 hover:text-red-500"
                   />
                 </div>
@@ -69,11 +59,7 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit
           </div>
         </div>
         {isEditable && (
-          <form
-            onSubmit={(e) =>
-              onEditSubmit(e, commentID, body, commentBody, setMessage, setMessageVisible, onFormCancel, setIsEditable)
-            }
-          >
+          <form onSubmit={(e) => onEditSubmit(e, commentID, body, commentBody, onFormCancel, setIsEditable)}>
             <textarea
               rows={3}
               id="comment"

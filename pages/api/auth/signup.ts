@@ -7,7 +7,19 @@ const MONGODB_DB = process.env.MONGODB_DB
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   // only accept post request to this endpoint
   if (req.method !== 'POST') {
-    res.status(500).json({ message: 'Route not valid' })
+    res.status(500).json({
+      success: false,
+      payload: {
+        error: {
+          code: 500,
+          message: 'Route not valid.',
+        },
+      },
+      error: {
+        code: 500,
+        message: 'Route not valid.',
+      },
+    })
     return
   }
 
@@ -16,17 +28,53 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
   if (!name || !email || !password || !confirmPassword) {
-    res.status(422).json({ message: 'Invalid data' })
+    res.status(422).json({
+      success: false,
+      payload: {
+        error: {
+          code: 422,
+          message: 'Not all data provided.',
+        },
+      },
+      error: {
+        code: 422,
+        message: 'Not all data provided.',
+      },
+    })
     return
   }
 
   if (!validEmail.test(email)) {
-    res.status(422).json({ message: 'Email is not valid' })
+    res.status(422).json({
+      success: false,
+      payload: {
+        error: {
+          code: 422,
+          message: 'Email provided not valid.',
+        },
+      },
+      error: {
+        code: 422,
+        message: 'Email provided not valid.',
+      },
+    })
     return
   }
 
   if (password !== confirmPassword) {
-    res.status(422).json({ message: 'Passwords do not match' })
+    res.status(422).json({
+      success: false,
+      payload: {
+        error: {
+          code: 422,
+          message: 'Passwords do not match.',
+        },
+      },
+      error: {
+        code: 422,
+        message: 'Passwords do not match.',
+      },
+    })
     return
   }
 
@@ -37,8 +85,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const checkExisting = await db.collection('users').findOne({ email: email })
 
   if (checkExisting) {
-    res.status(422).json({ message: `User with email: ${email} already exists` })
-
+    res.status(422).json({
+      success: false,
+      payload: {
+        error: {
+          code: 422,
+          message: `User with email: ${email} already exists.`,
+        },
+      },
+      error: {
+        code: 422,
+        message: `User with email: ${email} already exists.`,
+      },
+    })
     return
   }
 
@@ -51,7 +110,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     role: 'user',
   })
 
-  res.status(201).json({ message: 'User created', ...status })
+  res.status(201).json({
+    success: true,
+    payload: {
+      message: 'User Created',
+      ...status,
+    },
+  })
 }
 
 export default handler

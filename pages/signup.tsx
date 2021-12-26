@@ -60,15 +60,17 @@ const Login: NextPage = () => {
       }),
     })
 
-    if (response.status === 201) {
-      router.push({
-        pathname: '/login',
-        query: { message: 'account_created' },
-      })
-    } else {
-      const data = await response.json()
-      setError(data.message)
+    const data = await response.json()
+
+    if (data.error) {
+      setError(data.error.message)
+      return
     }
+
+    router.push({
+      pathname: '/login',
+      query: { message: 'account_created' },
+    })
   }
 
   return (

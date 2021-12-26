@@ -15,9 +15,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const documents = await getAll(challenges, parseInt(limit as string, 10), parseInt(skip as string, 10))
 
       if (documents === null) {
-        res.status(500).json({ error: 'error getting challenges ' })
+        res.status(500).json({
+          success: false,
+          payload: {
+            error: {
+              code: 500,
+              message: 'There was a problem fetching challenges.',
+            },
+          },
+          error: {
+            code: 500,
+            message: 'There was a problem fetching challenges.',
+          },
+        })
+        break
       }
-      res.status(200).json(documents)
+      res.status(200).json({
+        success: true,
+        payload: {
+          challenges: documents,
+        },
+      })
       break
     case 'POST':
       const challengeData = {
@@ -25,15 +43,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         description: req.body.description,
         testCases: req.body.testCases,
       }
-      const documentId = await insertOne(challenges, req.body.owner, challengeData)
+      const documentID = await insertOne(challenges, req.body.owner, challengeData)
 
-      if (documentId === null) {
-        res.status(500).json({ error: 'could not insert challenge' })
+      if (documentID === null) {
+        res.status(500).json({
+          success: false,
+          payload: {
+            error: {
+              code: 500,
+              message: 'There was a problem inserting challenge.',
+            },
+          },
+          error: {
+            code: 500,
+            message: 'There was a problem inserting challenge.',
+          },
+        })
+        break
       }
-      res.status(200).json({ message: `Successfully added challenge ${documentId}`, insertId: documentId })
+      res.status(200).json({
+        success: true,
+        payload: {
+          message: `Successfully added challenge ${documentID}.`,
+          insertID: documentID,
+        },
+      })
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
+      break
   }
 }

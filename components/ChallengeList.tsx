@@ -24,7 +24,7 @@ const ChallengeList = ({ limit, skip }: Props) => {
         {error && <h1>Failed to load</h1>}
         {!data && <SkeletonChallengeList numChallenges={limit} />}
         {data &&
-          data.map((challenge: Challenge) => (
+          data.payload.challenges.map((challenge: Challenge) => (
             <ChallengeCard
               id={challenge._id}
               title={challenge.title}

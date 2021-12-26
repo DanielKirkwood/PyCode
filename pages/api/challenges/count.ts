@@ -14,8 +14,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const count = await db.collection('challenges').countDocuments(query)
 
-    return res.status(200).json(count)
+    return res.status(200).json({
+      success: true,
+      payload: {
+        count
+      },
+    })
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json({
+      success: false,
+      payload: {
+        error: {
+          code: 500,
+          message: error,
+        },
+      },
+      error: {
+        code: 500,
+        message: error,
+      },
+    })
   }
 }

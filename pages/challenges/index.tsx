@@ -20,7 +20,7 @@ const Challenges: NextPage = () => {
   return (
     <>
       <ChallengeList limit={LIMIT} skip={skip} />
-      <Pagination totalPages={data / LIMIT} currentPage={page} pageClick={goToPage} />
+      <Pagination totalPages={data.payload.count / LIMIT} currentPage={page} pageClick={goToPage} />
     </>
   )
 }

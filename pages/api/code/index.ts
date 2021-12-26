@@ -76,14 +76,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(400).json({
               success: false,
               payload: {
-                message: 'error linting code',
+                error: {
+                  code: 400,
+                  message: 'Error running linter.',
+                },
+              },
+              error: {
+                code: 400,
+                message: 'Error running linter.',
               },
             })
             break
           }
         }
       }
-      res.status(405).json({ success: false, payload: 'execute query param not provided' })
+      res.status(405).json({
+        success: false,
+        payload: {
+          error: {
+            code: 405,
+            message: 'Execute query param not provided.',
+          },
+        },
+        error: {
+          code: 405,
+          message: 'Execute query param not provided.',
+        },
+      })
       break
     default:
       res.setHeader('Allow', ['POST'])

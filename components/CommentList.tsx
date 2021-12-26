@@ -175,8 +175,10 @@ export const CommentList = ({ challengeID, isVerified }: Props) => {
       }),
     })
 
-    if (!response.ok) {
-      console.error('could not edit verified status')
+    const data = await response.json()
+
+    if (data.error) {
+      console.error(data.error.message)
       return
     }
 

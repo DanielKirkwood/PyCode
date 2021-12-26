@@ -6,7 +6,7 @@ import Pagination from '@/components/Pagination'
 
 const Challenges: NextPage = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json())
-  const { data } = useSWR('/api/challenges/count', fetcher)
+  const { data, error } = useSWR('/api/challenges/count', fetcher)
 
   const LIMIT = 5
   const [skip, setSkip] = useState(0)
@@ -20,7 +20,9 @@ const Challenges: NextPage = () => {
   return (
     <>
       <ChallengeList limit={LIMIT} skip={skip} />
-      <Pagination totalPages={data.payload.count / LIMIT} currentPage={page} pageClick={goToPage} />
+      {error && <h1>Failed to load</h1>}
+      {!data && <h1>Loading..</h1>}
+      {data && <Pagination totalPages={data.payload.count / LIMIT} currentPage={page} pageClick={goToPage} />}
     </>
   )
 }

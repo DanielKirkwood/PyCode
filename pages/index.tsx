@@ -6,6 +6,9 @@ import { useSession } from 'next-auth/react'
 
 const Home: NextPage = () => {
   const { status } = useSession()
+  const loading = status === 'loading'
+
+  if (typeof window !== 'undefined' && loading) return null
 
   return (
     <div className="pt-24">

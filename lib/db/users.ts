@@ -1,6 +1,16 @@
 import { ObjectId } from 'mongodb'
 import { Collection } from 'mongodb'
 
+export const getAllUsers = async (users: Collection, limit = 50, skip = 0) => {
+  try {
+    const result = await users.find().skip(skip).limit(limit).toArray()
+    return result
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
 export const getAllSaved = async (userChallengeData: Collection, userID: string, limit = 50, skip = 0) => {
   try {
     const result = await userChallengeData

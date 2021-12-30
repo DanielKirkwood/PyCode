@@ -11,6 +11,45 @@ export const getAllUsers = async (users: Collection, limit = 50, skip = 0) => {
   }
 }
 
+export const getUser = async (users: Collection, userID: string) => {
+  try {
+    const result = await users.findOne({ _id: ObjectId.createFromHexString(userID) })
+    return result
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+export const updateUser = async (
+  users: Collection,
+  userID: string,
+  updatedField: { name: string; email: string; role: string }
+) => {
+  try {
+    const updatedUser = await users.findOneAndUpdate(
+      {
+        _id: ObjectId.createFromHexString(userID),
+      },
+      {
+        $set: {
+          name: updatedField.name,
+          email: updatedField.email,
+          role: updatedField.role,
+        },
+      },
+      {
+        returnDocument: 'after',
+      }
+    )
+
+    return updatedUser
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
 export const getAllSaved = async (userChallengeData: Collection, userID: string, limit = 50, skip = 0) => {
   try {
     const result = await userChallengeData

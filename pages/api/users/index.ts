@@ -9,10 +9,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method } = req
   switch (method) {
     case 'GET':
-      const limit = !req.query.limit ? 50 : req.query.limit
-      const skip = !req.query.skip ? 0 : req.query.skip
+      const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
+      const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
+      const query = !req.query.name ? {} : { nameSearch: { $regex: `${String(req.query.name)}`, $options: 'i' } }
 
-      const documents = await getAllUsers(users, parseInt(limit as string, 10), parseInt(skip as string, 10))
+      const documents = await getAllUsers(users, query, limit, skip)
 
       if (documents === null) {
         res.status(500).json({
@@ -32,8 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const numDocuments = documents.length
-      const totalDocuments = await users.countDocuments({})
-      const numDocumentsRemaining = await users.countDocuments({}, { skip: parseInt(skip as string) })
+      const totalDocuments = await users.countDocuments(query)
+      const numDocumentsRemaining = (await users.countDocuments(query, { skip: skip })) - limit
 
       res.status(200).json({
         success: true,

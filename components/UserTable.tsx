@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import useSWR from 'swr'
 import EditableRow from './EditableRow'
 import ReadOnlyRow from './ReadOnlyRow'
@@ -13,12 +13,20 @@ const UserTable = () => {
 
   const [limit, setLimit] = useState(Number(20))
   const [skip, setSkip] = useState(Number(0))
-  console.log('limit ->', limit, ' skip ->', skip)
 
   const [searchName, setSearchName] = useState('')
 
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
-  const { data, error, mutate } = useSWR(`/api/users?limit=${limit}&skip=${skip}`, fetcher)
+  const { data, error, mutate } = useSWR(`/api/users?name=${searchName}&limit=${limit}&skip=${skip}`, fetcher)
+
+  console.log('numDocumentsRemaining ->', data?.payload.numDocumentsRemaining)
+  console.log('numDocuments ->', data?.payload.numDocuments)
+
+  const handleSearchNameChange = (event) => {
+    event.preventDefault()
+    const searchNameValue = event.target.value
+    setSearchName(searchNameValue)
+  }
 
   const handleLimitChange = (event) => {
     event.preventDefault()
@@ -100,6 +108,9 @@ const UserTable = () => {
                 </svg>
               </span>
               <input
+                onChange={handleSearchNameChange}
+                name="searchName"
+                id="searchName"
                 placeholder="Search for a name..."
                 className="appearance-none rounded-l sm:rounded-r-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
               />
@@ -110,9 +121,10 @@ const UserTable = () => {
                 value={limit}
                 className="h-full rounded-r border block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               >
-                <option value={5}>Show only 5</option>
-                <option value={10}>Show only 10</option>
-                <option value={20}>Show only 20</option>
+                <option value={5}>Show 5 results</option>
+                <option value={10}>Show 10 results</option>
+                <option value={20}>Show 20 results</option>
+                <option value={50}>Show 50 results</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -154,7 +166,7 @@ const UserTable = () => {
                   {!data && <h1>Loading user data</h1>}
                   {data &&
                     data.payload.users.map((user) => (
-                      <>
+                      <Fragment key={user._id}>
                         {editUserById === user._id ? (
                           <EditableRow
                             key={user._id}
@@ -165,7 +177,7 @@ const UserTable = () => {
                         ) : (
                           <ReadOnlyRow user={user} key={user._id} handleEditClick={handleEditClick} />
                         )}
-                      </>
+                      </Fragment>
                     ))}
                 </tbody>
               </table>
@@ -187,9 +199,7 @@ const UserTable = () => {
                       Prev
                     </button>
                     <button
-                      disabled={
-                        Number(data.payload.totalDocuments) === Number(skip + data.payload.numDocuments) ? true : false
-                      }
+                      disabled={Number(data.payload.numDocumentsRemaining) === 0 ? true : false}
                       onClick={() => setSkip(Number(skip + limit))}
                       type="button"
                       className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed"

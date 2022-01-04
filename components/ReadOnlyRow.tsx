@@ -16,7 +16,7 @@ interface Props {
 
 const ReadOnlyRow = ({ user, handleEditClick }: Props) => {
   return (
-    <tr>
+    <tr className="odd:bg-white even:bg-gray-50">
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
       <td className="px-6 py-4 whitespace-nowrap">

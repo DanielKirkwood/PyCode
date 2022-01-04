@@ -1,6 +1,6 @@
 import clientPromise from 'lib/db/mongodb'
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAllUsers } from 'lib/db/users'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const dbClient = await clientPromise
@@ -30,10 +30,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         break
       }
+
+      const numDocuments = documents.length
+      const totalDocuments = await users.countDocuments({})
+      const numDocumentsRemaining = await users.countDocuments({}, { skip: parseInt(skip as string) })
+
       res.status(200).json({
         success: true,
         payload: {
           users: documents,
+          numDocuments,
+          totalDocuments,
+          numDocumentsRemaining,
         },
       })
       break

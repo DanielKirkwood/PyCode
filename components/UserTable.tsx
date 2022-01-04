@@ -19,9 +19,6 @@ const UserTable = () => {
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
   const { data, error, mutate } = useSWR(`/api/users?name=${searchName}&limit=${limit}&skip=${skip}`, fetcher)
 
-  console.log('numDocumentsRemaining ->', data?.payload.numDocumentsRemaining)
-  console.log('numDocuments ->', data?.payload.numDocuments)
-
   const handleSearchNameChange = (event) => {
     event.preventDefault()
     const searchNameValue = event.target.value

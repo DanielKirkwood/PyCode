@@ -1,6 +1,7 @@
-import clientPromise from 'lib/db/mongodb'
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAll, insertOne } from 'lib/db/challenges'
+import clientPromise from 'lib/db/mongodb'
+import { ObjectId } from 'mongodb'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const dbClient = await clientPromise
@@ -11,8 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       const limit = !req.query.limit ? 50 : req.query.limit
       const skip = !req.query.skip ? 0 : req.query.skip
+      const query = !req.query.user ? {} : { owner: ObjectId.createFromHexString(req.query.user.toString()) }
 
-      const documents = await getAll(challenges, parseInt(limit as string, 10), parseInt(skip as string, 10))
+      const documents = await getAll(challenges, query, parseInt(limit as string, 10), parseInt(skip as string, 10))
 
       if (documents === null) {
         res.status(500).json({

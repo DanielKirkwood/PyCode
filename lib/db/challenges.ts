@@ -1,5 +1,4 @@
-import { ObjectId } from 'mongodb'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 
 interface TestCase {
   inputs: {
@@ -20,9 +19,9 @@ interface Owner {
   ownerRole: string
 }
 
-export const getAll = async (challenges: Collection, limit = 50, skip = 0) => {
+export const getAll = async (challenges: Collection, query = {}, limit = 50, skip = 0) => {
   try {
-    const result = await challenges.find({}).skip(skip).limit(limit).toArray()
+    const result = await challenges.find(query).skip(skip).limit(limit).toArray()
     return result
   } catch (error) {
     console.error(error)

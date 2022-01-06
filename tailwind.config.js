@@ -40,6 +40,7 @@ module.exports = {
       backgroundColor: ['odd', 'even', 'disabled'],
       opacity: ['disabled'],
       cursor: ['disabled'],
+      textColor: ['first'],
     },
   },
   plugins: [],

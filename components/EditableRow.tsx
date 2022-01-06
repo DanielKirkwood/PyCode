@@ -1,6 +1,7 @@
 import React from 'react'
 
 interface Props {
+  userID: string
   editFormData: {
     name: string
     email: string
@@ -10,9 +11,10 @@ interface Props {
   handleEditFormCancel: () => void
 }
 
-const EditableRow = ({ editFormData, handleEditFormChange, handleEditFormCancel }: Props) => {
+const EditableRow = ({ userID, editFormData, handleEditFormChange, handleEditFormCancel }: Props) => {
   return (
     <tr className="odd:bg-white even:bg-gray-50">
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{userID}</td>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
         <input
           className="w-full"

@@ -139,6 +139,12 @@ const UserTable = () => {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0"
                     >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0"
+                    >
                       Name
                     </th>
                     <th
@@ -167,6 +173,7 @@ const UserTable = () => {
                         {editUserById === user._id ? (
                           <EditableRow
                             key={user._id}
+                            userID={user._id}
                             editFormData={editFormData}
                             handleEditFormChange={handleEditFormChange}
                             handleEditFormCancel={handleEditFormCancel}

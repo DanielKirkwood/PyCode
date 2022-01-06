@@ -3,15 +3,17 @@ import flattenChildren from 'react-keyed-flatten-children'
 
 type RowProps = {
   data: Record<string, string>
+  editable?: boolean
 }
 type RowComponent = React.FunctionComponent<RowProps>
 
 type TableProps = {
   headings: string[]
+  editable?: boolean
 }
 type TableComponent = React.FunctionComponent<TableProps> & { Row: RowComponent }
 
-const Table: TableComponent = ({ children, headings }): JSX.Element => {
+const Table: TableComponent = ({ children, headings, editable }): JSX.Element => {
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
@@ -29,13 +31,18 @@ const Table: TableComponent = ({ children, headings }): JSX.Element => {
                     </th>
                   )
                 })}
-                <th scope="col" className="relative px-6 py-3 bg-gray-100 rounded-tl rounded-bl">
-                  <span className="sr-only">Edit</span>
-                </th>
+                {editable && (
+                  <th scope="col" className="relative px-6 py-3 bg-gray-100 rounded-tl rounded-bl">
+                    <span className="sr-only">Edit</span>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {flattenChildren(children).map((child, index) => {
+                if (React.isValidElement(child)) {
+                  return React.cloneElement(child, { editable })
+                }
                 return <Fragment key={index}>{child}</Fragment>
               })}
             </tbody>
@@ -46,7 +53,7 @@ const Table: TableComponent = ({ children, headings }): JSX.Element => {
   )
 }
 
-const Row: RowComponent = ({ data }: RowProps): JSX.Element => {
+const Row: RowComponent = ({ data, editable }: RowProps): JSX.Element => {
   return (
     <tr className="odd:bg-white even:bg-gray-50">
       {Object.keys(data).map((keyName, index) => {
@@ -56,7 +63,7 @@ const Row: RowComponent = ({ data }: RowProps): JSX.Element => {
           </td>
         )
       })}
-      <button className="px-6 py-4 text-blue-600 hover:text-blue-900 hover:underline">Edit</button>
+      {editable && <button className="px-6 py-4 text-blue-600 hover:text-blue-900 hover:underline">Edit</button>}
     </tr>
   )
 }

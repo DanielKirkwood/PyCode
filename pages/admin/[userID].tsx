@@ -1,10 +1,10 @@
+import Table from '@/components/Table'
 import clientPromise from 'lib/db/mongodb'
 import { getUser } from 'lib/db/users'
 import type { GetServerSideProps, NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { TiTick, TiTimes } from 'react-icons/ti'
 import useSWR from 'swr'
 
 interface Props {
@@ -73,49 +73,11 @@ const UserAdmin: NextPage<Props> = ({ user }) => {
                   Challenges
                 </h2>
                 <div className="block w-full overflow-x-auto">
-                  <table className="items-center w-full bg-transparent border-collapse table-fixed">
-                    <thead>
-                      <tr>
-                        <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                          Challenge ID
-                        </th>
-                        <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                          Title
-                        </th>
-                        <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                          Description
-                        </th>
-                        <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                          Verified
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {error && <h1>There was an error</h1>}
-                      {!data && <h1>Loading user data</h1>}
-                      {data &&
-                        data.payload.challenges.map((challenge) => (
-                          <tr key={challenge._id}>
-                            <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
-                              {challenge._id}
-                            </th>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                              {`${challenge.title.substring(0, 20)}...`}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                              {`${challenge.description.substring(0, 25)}...`}
-                            </td>
-                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-md whitespace-nowrap p-4">
-                              {challenge.verified ? (
-                                <TiTick className="text-green-500" />
-                              ) : (
-                                <TiTimes className="text-red-500" />
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <Table editable headings={['id', 'name', 'email', 'role']}>
+                    <Table.Row data={{ _id: '1234', name: 'Daniel', email: 'user@email.com', role: 'super-admin' }} />
+                    <Table.Row data={{ _id: '5678', name: 'John', email: 'user2@email.com', role: 'admin' }} />
+                    <Table.Row data={{ _id: '1356', name: 'Dillon', email: 'user3@email.com', role: 'user' }} />
+                  </Table>
                 </div>
               </div>
             </div>

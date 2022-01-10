@@ -43,5 +43,5 @@ module.exports = {
       textColor: ['first'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }

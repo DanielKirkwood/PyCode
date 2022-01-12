@@ -36,8 +36,7 @@ const UserAdmin: NextPage<Props> = ({ user }) => {
   const [searchName, setSearchName] = useState('')
 
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
-  const { data, error, mutate } = useSWR(`/api/challenges?user=${user._id}&limit=${limit}&skip=${skip}`, fetcher)
-  console.log(data)
+  const { data, error } = useSWR(`/api/challenges?user=${user._id}&limit=${limit}&skip=${skip}`, fetcher)
 
   const handleSearchNameChange = (event) => {
     const searchNameValue = event.target.value

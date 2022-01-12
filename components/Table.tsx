@@ -250,7 +250,7 @@ const Pagination: PaginationComponent = ({
           Prev
         </button>
         <button
-          disabled={Number(numRowsRemaining) === 0 ? true : false}
+          disabled={Number(numRowsRemaining) <= 0 ? true : false}
           onClick={() => setSkip(Number(skip + limit))}
           type="button"
           className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed"

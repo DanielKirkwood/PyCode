@@ -1,10 +1,9 @@
-import type { NextPage } from 'next'
-import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { useRef, useState } from 'react'
-import { Fragment } from 'react'
-import { NextRouter, useRouter } from 'next/router'
 import Stepper from '@/components/Stepper'
+import type { NextPage } from 'next'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { NextRouter, useRouter } from 'next/router'
+import { Fragment, useRef, useState } from 'react'
 
 const Create: NextPage = () => {
   const [title, setTitle] = useState('')

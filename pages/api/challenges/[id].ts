@@ -1,4 +1,4 @@
-import { deleteOne, getOne, verifyChallenge } from 'lib/db/challenges'
+import { deleteOne, getOne, updateOne, verifyChallenge } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -73,17 +73,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         break
       }
+
+      // verified query param not provided, so update the challenge
+      const challengeData = req.body.challengeData
+
+      const editedResult = await updateOne(challenges, id.toString(), challengeData)
+
+      if (editedResult) {
+        res.status(200).json({
+          success: true,
+          payload: {
+            message: 'Challenge updated.',
+          },
+        })
+        break
+      }
+
       res.status(500).json({
         success: false,
         payload: {
           error: {
             code: 500,
-            message: 'Verified query param not provided.',
+            message: 'Issue updating challenge.',
           },
         },
         error: {
           code: 500,
-          message: 'Verified query param not provided.',
+          message: 'Issue updating challenge.',
         },
       })
       break
@@ -113,7 +129,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
       break
     default:
-
       res.setHeader('Allow', ['GET', 'DELETE', 'PATCH'])
       res.status(405).end(`Method ${method} Not Allowed`)
       break

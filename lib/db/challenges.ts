@@ -146,6 +146,29 @@ export const insertOne = async (challenges: Collection, ownerID: string, challen
   }
 }
 
+export const updateOne = async (challenges: Collection, challengeID: string, challengeData: challengeData) => {
+  try {
+    if (!ObjectId.isValid(challengeID)) {
+      return { error: `Invalid challenge id: ${challengeID}` }
+    }
+
+    await challenges.updateOne(
+      {
+        _id: ObjectId.createFromHexString(challengeID),
+      },
+      {
+        $set: {
+          ...challengeData,
+        },
+      }
+    )
+    return true
+  } catch (error) {
+    console.error()
+    return null
+  }
+}
+
 export const deleteOne = async (challenges: Collection, id: string) => {
   try {
     const result = await challenges.deleteOne({ _id: ObjectId.createFromHexString(id) })

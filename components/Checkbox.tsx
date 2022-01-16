@@ -1,18 +1,18 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 
 interface Props {
   text: string
   value: boolean
-  onClick: React.MouseEventHandler<HTMLInputElement>
+  handleCheckboxToggle: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-const Checkbox = ({ text, value, onClick }: Props) => {
+const Checkbox = ({ text, value, handleCheckboxToggle }: Props) => {
   return (
     <div>
       <input
         type="checkbox"
         checked={value}
-        onClick={onClick}
+        onChange={(e) => handleCheckboxToggle(e)}
         id="isVerified"
         className="h-4 w-4 rounded-full checked:bg-blue-600 checked:border-blue-600 focus:outline-none mt-1 float-left mr-2 cursor-pointer"
       />

@@ -1,10 +1,8 @@
-import React, { Fragment, useState } from 'react'
-import dynamic from 'next/dynamic'
-import { useSession } from 'next-auth/react'
-
 import SaveButton from '@/components/SaveButton'
 import TestAccordion from '@/components/TestAccordion'
-
+import { useSession } from 'next-auth/react'
+import dynamic from 'next/dynamic'
+import React, { Fragment, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 
 interface TestCase {
@@ -125,7 +123,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
   return (
     CodeMirror && (
       <>
-        {data?.payload?.document.code && (
+        {data?.payload?.document?.code && (
           <>
             {
               <CodeMirror

@@ -143,8 +143,9 @@ export const CommentList = ({ challengeID, isVerified }: Props) => {
     return
   }
 
-  const handleCheckboxToggle = async () => {
-    const response = await fetch(`/api/challenges/${challengeID}?verified=${!isChecked}`, {
+  const handleCheckboxToggle = async (event) => {
+    const verifiedValue = event.target.checked
+    const response = await fetch(`/api/challenges/${challengeID}?verified=${verifiedValue}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -162,7 +163,7 @@ export const CommentList = ({ challengeID, isVerified }: Props) => {
       return
     }
 
-    setIsChecked(!isChecked)
+    setIsChecked(verifiedValue)
     return
   }
 
@@ -207,7 +208,7 @@ export const CommentList = ({ challengeID, isVerified }: Props) => {
                 </button>
                 {session?.user.role === 'admin' ||
                   (session?.user.role === 'super-admin' && (
-                    <Checkbox onClick={handleCheckboxToggle} text="Verify" value={isChecked} />
+                    <Checkbox handleCheckboxToggle={handleCheckboxToggle} text="Verify" value={isChecked} />
                   ))}
               </div>
             </form>

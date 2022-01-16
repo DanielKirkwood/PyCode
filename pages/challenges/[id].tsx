@@ -1,10 +1,11 @@
-import type { GetServerSideProps, NextPage } from 'next'
 import CodeEditor from '@/components/CodeEditor'
 import { CommentList } from '@/components/CommentList'
-import { useSession } from 'next-auth/react'
 import { getOne } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
+import type { GetServerSideProps, NextPage } from 'next'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { NextRouter, useRouter } from 'next/router'
 
 interface TestCase {
   inputs: {
@@ -29,6 +30,7 @@ interface Props {
 
 const ChallengePage: NextPage<Props> = ({ challenge }) => {
   const { data: session } = useSession()
+  const router: NextRouter = useRouter()
 
   return (
     <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -76,6 +78,23 @@ const ChallengePage: NextPage<Props> = ({ challenge }) => {
                     )
                   })}
                   <h3 className="text-lg">Output: {challenge.testCases[0].output}</h3>
+                  {challenge.owner === session?.user.id && (
+                    <>
+                      <div className="flex justify-between items-center mt-3">
+                        <hr className="w-full" />
+                        <span className="p-2 text-gray-400 mb-1">Actions</span>
+                        <hr className="w-full" />
+                      </div>
+                      <div>
+                        <button
+                          className="text-white bg-blue-500 border-0  py-2 px-4 focus:outline-none hover:bg-blue-600 rounded"
+                          onClick={() => router.push(`/challenges/edit/${challenge.id}`)}
+                        >
+                          Edit challenge
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="col-span-8 md:col-span-6">

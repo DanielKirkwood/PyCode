@@ -6,7 +6,7 @@ import { useState } from 'react'
 import useSWR from 'swr'
 
 const Challenges: NextPage = () => {
-  const [limit, setLimit] = useState<number>(20)
+  const [limit] = useState<number>(20)
   const [skip, setSkip] = useState<number>(0)
 
   const fetcher = (url) => fetch(url).then((res) => res.json())

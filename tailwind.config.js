@@ -1,6 +1,5 @@
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -36,7 +35,12 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['odd', 'even', 'disabled'],
+      opacity: ['disabled'],
+      cursor: ['disabled'],
+      textColor: ['first'],
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }

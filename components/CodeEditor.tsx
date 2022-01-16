@@ -65,7 +65,6 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
 
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
   const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
-  console.log('CodeEditor useSWR data ->', data)
 
   // code mirror
   const options = { lineNumbers: true, mode: 'python', theme: 'material', lineWrapping: true }

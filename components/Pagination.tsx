@@ -1,55 +1,39 @@
 import React from 'react'
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
 
-interface Props {
-  totalPages: number
-  currentPage: number
-  pageClick: (index: number) => void
+type Props = {
+  limit: number
+  skip: number
+  numRows: number
+  totalRows: number
+  numRowsRemaining: number
+  onSkipBtnClick: (n: number) => void
 }
 
-const Pagination = ({ totalPages, currentPage, pageClick }: Props) => {
-  const pages = []
-  for (let index = 0; index < totalPages; index++) {
-    if (index === currentPage) {
-      pages.push(
-        <a
-          onClick={() => pageClick(index)}
-          className="text-sm font-medium leading-none cursor-pointer text-blue-700 border-t border-blue-400 pt-3 mr-4 px-2"
-          key={index + 1}
-        >
-          {index + 1}
-        </a>
-      )
-    } else {
-      pages.push(
-        <a
-          onClick={() => pageClick(index)}
-          className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-blue-700 border-t border-transparent hover:border-blue-400 pt-3 mr-4 px-2"
-          key={index + 1}
-        >
-          {index + 1}
-        </a>
-      )
-    }
-  }
+function Pagination({ limit, skip, numRows, totalRows, numRowsRemaining, onSkipBtnClick }: Props): JSX.Element {
   return (
-    <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
-      <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
-        <a
-          onClick={() => pageClick(currentPage - 1)}
-          className="flex items-center pt-3 text-gray-600 hover:text-blue-700 cursor-pointer"
+    <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
+      <span className="text-xs xs:text-sm text-gray-900">
+        {totalRows > 0
+          ? `Showing ${Number(skip + 1)} to ${Number(skip + numRows)} of ${Number(totalRows)} Entries`
+          : 'There are 0 entries'}
+      </span>
+      <div className="inline-flex mt-2 xs:mt-0">
+        <button
+          disabled={Number(skip) === 0 ? true : false}
+          onClick={() => onSkipBtnClick(Number(skip - limit))}
+          type="button"
+          className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <AiOutlineArrowLeft />
-          <p className="text-sm ml-3 font-medium leading-none ">Previous</p>
-        </a>
-        <div className="sm:flex hidden">{pages}</div>
-        <a
-          onClick={() => pageClick(currentPage + 1)}
-          className="flex items-center pt-3 text-gray-600 hover:text-blue-700 cursor-pointer"
+          Prev
+        </button>
+        <button
+          disabled={Number(numRowsRemaining) <= 0 ? true : false}
+          onClick={() => onSkipBtnClick(Number(skip + limit))}
+          type="button"
+          className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <p className="text-sm font-medium leading-none mr-3">Next</p>
-          <AiOutlineArrowRight />
-        </a>
+          Next
+        </button>
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
-import clientPromise from 'lib/db/mongodb'
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { getAll, insertOne } from 'lib/db/challenges'
+import clientPromise from 'lib/db/mongodb'
+import { ObjectId } from 'mongodb'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const dbClient = await clientPromise
@@ -9,10 +10,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method } = req
   switch (method) {
     case 'GET':
-      const limit = !req.query.limit ? 50 : req.query.limit
-      const skip = !req.query.skip ? 0 : req.query.skip
+      const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
+      const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
+      const query = {}
+      if (req.query.user) {
+        query['owner'] = ObjectId.createFromHexString(req.query.user.toString())
+      }
+      if (req.query.search) {
+        query['title'] = { $regex: `${String(req.query.search)}`, $options: 'i' }
+      }
 
-      const documents = await getAll(challenges, parseInt(limit as string, 10), parseInt(skip as string, 10))
+      const documents = await getAll(challenges, query, limit, skip)
 
       if (documents === null) {
         res.status(500).json({
@@ -30,10 +38,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         break
       }
+
+      const numDocuments = documents.length
+      const totalDocuments = await challenges.countDocuments(query)
+      const numDocumentsRemaining = (await challenges.countDocuments(query, { skip: skip })) - limit
+
       res.status(200).json({
         success: true,
         payload: {
           challenges: documents,
+          numDocuments,
+          totalDocuments,
+          numDocumentsRemaining,
         },
       })
       break

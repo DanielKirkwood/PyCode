@@ -7,15 +7,17 @@ interface Props {
 
 const Stepper = ({ currentStep, steps }: Props) => {
   return (
-    <div className={`grid gap-4 w-3/4 m-auto grid-cols-${steps.length}`}>
+    <div className={`flex mb-4`}>
       {steps.map((step, i) => {
         return (
-          <div key={i} className={`border-t-4 pt-4 ${i + 1 <= currentStep ? 'border-blue-500' : 'border-gray-200'}`}>
-            <p className={`uppercase font-bold ${i + 1 <= currentStep ? 'border-blue-500' : 'text-gray-400'}`}>{`Step ${
-              i + 1
-            }`}</p>
-            <p className="font-semibold">{step}</p>
-          </div>
+          <p
+            key={i}
+            className={`flex-grow border-b-2 py-2 text-lg px-1 ${
+              i + 1 <= currentStep ? 'text-indigo-500 border-indigo-500' : 'border-gray-300'
+            }`}
+          >
+            {step}
+          </p>
         )
       })}
     </div>

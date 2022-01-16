@@ -12,7 +12,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
       const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
-      const query = !req.query.user ? {} : { owner: ObjectId.createFromHexString(req.query.user.toString()) }
+      const query = {}
+      if (req.query.user) {
+        query['owner'] = ObjectId.createFromHexString(req.query.user.toString())
+      }
+      if (req.query.search) {
+        query['title'] = { $regex: `${String(req.query.search)}`, $options: 'i' }
+      }
 
       const documents = await getAll(challenges, query, limit, skip)
 

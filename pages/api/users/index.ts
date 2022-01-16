@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
       const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
-      const query = !req.query.name ? {} : { nameSearch: { $regex: `${String(req.query.name)}`, $options: 'i' } }
+      const query = !req.query.search ? {} : { nameSearch: { $regex: `${String(req.query.search)}`, $options: 'i' } }
 
       const documents = await getAllUsers(users, query, limit, skip)
 

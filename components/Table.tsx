@@ -1,273 +1,177 @@
-import React, { Dispatch, Fragment, SetStateAction } from 'react'
-import flattenChildren from 'react-keyed-flatten-children'
+import React, { useState } from 'react'
+import useSWR from 'swr'
+import Pagination from './Pagination'
+import SearchBar from './SearchBar'
+import TableDisplay from './TableDisplay'
 
-type RowProps = {
-  data: Record<string, any>
-  headings?: string[]
-  editable?: boolean
-  handleEditClick?: (e: React.MouseEvent<HTMLButtonElement>, data: Record<string, string>) => void
-}
-type RowComponent = React.FC<RowProps>
-
-type EditableRowProps = {
-  data: Record<string, any>
-  headings?: string[]
-  protectedNames?: string[]
-  editFormData: Record<string, any>
-  handleCancelClick: () => void
-  handleEditOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
-}
-type EditableRowComponent = React.FC<EditableRowProps>
-
-type PaginationProps = {
-  limit: number
-  skip: number
-  numRows: number
-  totalRows: number
-  numRowsRemaining: number
-  setSkip: Dispatch<SetStateAction<number>>
+type Props = {
+  dataSource: string
+  dataKey: string
+  exclude: string[]
+  protectedKeys: string[]
+  formDataObject: unknown
 }
 
-type PaginationComponent = React.FC<PaginationProps>
+function Table({ dataSource, dataKey, exclude, protectedKeys, formDataObject }: Props): JSX.Element {
+  const [limit, setLimit] = useState<number>(10)
+  const [skip, setSkip] = useState<number>(0)
+  const [searchInput, setSearchInput] = useState<string>('')
 
-type TableProps = {
-  headings: string[]
-  editable?: boolean
-  protectedNames: string[]
-  handleEditClick?: (e: React.MouseEvent<HTMLButtonElement>, data: Record<string, string>) => void
-  handleEditSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
-}
-type TableComponent = React.FC<TableProps> & { Row: RowComponent } & {
-  EditableRow: EditableRowComponent
-} & { Pagination: PaginationComponent }
+  const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
+  const { data, mutate } = useSWR(`${dataSource}&limit=${limit}&skip=${skip}&search=${searchInput}`, fetcher)
 
-const Table: TableComponent = ({
-  children,
-  headings,
-  editable,
-  handleEditClick,
-  handleEditSubmit,
-  protectedNames,
-}): JSX.Element => {
+  const keys = Object.keys(formDataObject)
+  const initialData = {}
+  keys.forEach((key) => {
+    const value = formDataObject[key]
+    switch (value) {
+      case 'string':
+        initialData[key] = ''
+        break
+      case 'boolean':
+        initialData[key] = false
+        break
+      case 'number':
+        initialData[key] = 1
+        break
+      default:
+        initialData[key] = ''
+        break
+    }
+  })
+
+  const [rowToEditId, setRowToEditId] = useState<string | number | null>(null)
+  const [editedFormData, setEditedFormData] = useState(initialData)
+
+  const handleSelectFieldOnChange = (event) => {
+    const fieldName = event.target.getAttribute('name')
+    const fieldValue = event.target.checked
+
+    const newFormData = { ...editedFormData }
+    newFormData[fieldName] = fieldValue
+
+    setEditedFormData(newFormData)
+  }
+
+  const handleInputFieldOnChange = (event) => {
+    const fieldName = event.target.getAttribute('name')
+    const fieldValue = fieldName === 'verified' ? event.target.checked : event.target.value
+
+    const newFormData = { ...editedFormData }
+    newFormData[fieldName] = fieldValue
+
+    setEditedFormData(newFormData)
+  }
+
+  const handleEditClick = (data) => {
+    setRowToEditId(data['_id'])
+
+    const formValues = {}
+    keys.forEach((key) => {
+      formValues[key] = data[key]
+    })
+
+    setEditedFormData(formValues)
+  }
+
+  const handleCancelClick = () => {
+    setEditedFormData(initialData)
+    setRowToEditId(null)
+  }
+
+  function onSkipBtnClick(n: number): void {
+    setSkip(n)
+  }
+
+  const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const newData = {
+      ...data,
+    }
+
+    newData.payload[dataKey] = data.payload[dataKey].map((x) => {
+      if (x._id === rowToEditId) {
+        return { ...x, ...editedFormData }
+      }
+      return x
+    })
+
+    mutate(newData, false)
+
+    await fetch(`${dataSource}/${rowToEditId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editedFormData),
+    })
+
+    mutate()
+    setRowToEditId(null)
+  }
+
+  // Created a new array of objects but with the excluded keys removed from each data entry
+  let cleanData: unknown[]
+  let numDocuments: number, numDocumentsRemaining: number, totalDocuments: number
+
+  if (data) {
+    if (data.payload.numDocuments) {
+      cleanData = data.payload[dataKey].map((row) => {
+        return Object.keys(row)
+          .filter((key) => !exclude.includes(key))
+          .reduce((obj, key) => {
+            obj[key] = row[key]
+            return obj
+          }, {})
+      })
+    }
+    numDocuments = data.payload.numDocuments
+    numDocumentsRemaining = data.payload.numDocumentsRemaining
+    totalDocuments = data.payload.totalDocuments
+  }
+
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
         <div className="w-full mx-auto overflow-auto">
-          {flattenChildren(children).map((child, index) => {
-            if (React.isValidElement(child)) {
-              if (child.type.displayName === 'Filter') {
-                return <Fragment key={index}>{child}</Fragment>
-              }
-            }
-          })}
-          <form onSubmit={handleEditSubmit}>
-            <table className="table-auto w-full text-left whitespace-no-wrap">
-              <thead>
-                <tr>
-                  {headings.map((heading, index) => {
-                    return (
-                      <th
-                        key={index}
-                        className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl"
-                      >
-                        {heading}
-                      </th>
-                    )
-                  })}
-                  {editable && (
-                    <th scope="col" className="relative px-6 py-3 bg-gray-100 rounded-tl rounded-bl">
-                      <span className="sr-only">Edit</span>
-                    </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {flattenChildren(children).map((child) => {
-                  if (React.isValidElement(child)) {
-                    if (child.type.displayName === 'Row') {
-                      return React.cloneElement(child, { headings, editable, handleEditClick })
-                    } else if (child.type.displayName === 'EditableRow') {
-                      return React.cloneElement(child, { headings, protectedNames })
-                    }
-                  }
-                })}
-              </tbody>
-            </table>
-          </form>
-          {flattenChildren(children).map((child, index) => {
-            if (React.isValidElement(child)) {
-              if (child.type.displayName === 'Pagination') {
-                return <Fragment key={index}>{child}</Fragment>
-              }
-            }
-          })}
+          {data && (
+            <>
+              <SearchBar
+                searchValue={searchInput}
+                setSearchInput={setSearchInput}
+                limitValue={limit}
+                setLimit={setLimit}
+              />
+              {totalDocuments > 0 && (
+                <TableDisplay
+                  data={cleanData}
+                  editable={true}
+                  formDataObject={formDataObject}
+                  protectedKeys={protectedKeys}
+                  handleCancelClick={handleCancelClick}
+                  handleInputFieldOnChange={handleInputFieldOnChange}
+                  handleSelectFieldOnChange={handleSelectFieldOnChange}
+                  editedFormData={editedFormData}
+                  handleEditClick={handleEditClick}
+                  rowToEditId={rowToEditId}
+                  onFormSubmit={onFormSubmit}
+                />
+              )}
+              <Pagination
+                limit={limit}
+                skip={skip}
+                onSkipBtnClick={onSkipBtnClick}
+                numRows={numDocuments}
+                numRowsRemaining={numDocumentsRemaining}
+                totalRows={totalDocuments}
+              />
+            </>
+          )}
         </div>
       </div>
     </section>
   )
 }
-
-const Row: RowComponent = ({ data, headings, editable, handleEditClick }: RowProps): JSX.Element => {
-  return (
-    <tr className="odd:bg-white even:bg-gray-50">
-      {Object.keys(data).map((keyName, index) => {
-        if (!headings) {
-          return
-        }
-        if (headings.includes(keyName)) {
-          return (
-            <td
-              key={index}
-              className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900"
-            >
-              {String(data[keyName])}
-            </td>
-          )
-        }
-      })}
-      {editable && (
-        <td>
-          <button
-            type="button"
-            onClick={(e) => handleEditClick(e, data)}
-            className="px-6 py-4 text-blue-600 hover:text-blue-900 hover:underline"
-          >
-            Edit
-          </button>
-        </td>
-      )}
-    </tr>
-  )
-}
-
-const EditableRow: EditableRowComponent = ({
-  data,
-  headings,
-  handleCancelClick,
-  handleEditOnChange,
-  protectedNames,
-  editFormData,
-}: EditableRowProps): JSX.Element => {
-  return (
-    <tr className="odd:bg-white even:bg-gray-50">
-      {Object.keys(data).map((keyName, index) => {
-        if (!headings) {
-          return
-        }
-        if (!headings.includes(keyName)) {
-          return
-        }
-        // do not allow user to edit any protected cells
-        if (protectedNames.includes(keyName)) {
-          return (
-            <td
-              key={index}
-              className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900"
-            >
-              {String(data[keyName])}
-            </td>
-          )
-        }
-        let jsx: JSX.Element
-        switch (typeof data[keyName]) {
-          case 'string':
-            jsx = (
-              <td key={index} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                <input
-                  className="w-full"
-                  type="text"
-                  placeholder={data[keyName]}
-                  name={keyName}
-                  id={keyName}
-                  onChange={handleEditOnChange}
-                  value={editFormData[keyName]}
-                  required
-                />
-              </td>
-            )
-            break
-          case 'boolean':
-            jsx = (
-              <td key={index} className="px-6 py-4">
-                <input
-                  className="text-green-500 accent-green-500 checked:bg-green-500 bg-gray-500"
-                  type="checkbox"
-                  checked={editFormData[keyName]}
-                  name={keyName}
-                  id={keyName}
-                  onChange={handleEditOnChange}
-                  required
-                />
-              </td>
-            )
-            break
-          default:
-            // if type not found return a non editable cell
-            jsx = (
-              <td
-                key={index}
-                className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900"
-              >
-                {data[keyName]}
-              </td>
-            )
-            break
-        }
-        return jsx
-      })}
-      <td className="px-6 py-4 text-sm font-medium flex flex-row justify-between align-middle">
-        <button type="submit" className="text-blue-600 hover:text-blue-900 hover:underline pr-2">
-          Save
-        </button>
-        <button onClick={handleCancelClick} type="button" className="text-blue-600 hover:text-blue-900 hover:underline">
-          Cancel
-        </button>
-      </td>
-    </tr>
-  )
-}
-
-const Pagination: PaginationComponent = ({
-  limit,
-  skip,
-  numRows,
-  totalRows,
-  numRowsRemaining,
-  setSkip,
-}: PaginationProps): JSX.Element => {
-  return (
-    <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
-      <span className="text-xs xs:text-sm text-gray-900">
-        Showing {Number(skip + 1)} to {Number(skip + numRows)} of {Number(totalRows)} Entries
-      </span>
-      <div className="inline-flex mt-2 xs:mt-0">
-        <button
-          disabled={Number(skip) === 0 ? true : false}
-          onClick={() => setSkip(Number(skip - limit))}
-          type="button"
-          className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Prev
-        </button>
-        <button
-          disabled={Number(numRowsRemaining) <= 0 ? true : false}
-          onClick={() => setSkip(Number(skip + limit))}
-          type="button"
-          className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
-      </div>
-    </div>
-  )
-}
-
-Row.displayName = 'Row'
-EditableRow.displayName = 'EditableRow'
-Pagination.displayName = 'Pagination'
-Table.displayName = 'Table'
-Table.Row = Row
-Table.EditableRow = EditableRow
-Table.Pagination = Pagination
 
 export default Table

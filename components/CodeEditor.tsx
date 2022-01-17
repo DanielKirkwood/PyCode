@@ -65,8 +65,18 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
   const { data } = useSWR(status === 'authenticated' ? `/api/${session.user.id}/${challengeID}` : null, fetcher)
 
   // code mirror
-  const options = { lineNumbers: true, mode: 'python', theme: 'material', lineWrapping: true }
+  const options = {
+    lineNumbers: true,
+    mode: 'python',
+    theme: 'material',
+    indentUnit: 4,
+    smartIndent: true,
+    indentWithTabs: false,
+    electricChars: true,
+    matchBrackets: true,
+  }
   function onCodeChange(newCode: string) {
+    setSaving(SavingState.NOT_SAVED)
     setCode(newCode)
   }
 
@@ -97,6 +107,7 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
     if (response.ok) {
       setSaving(SavingState.SAVED)
       mutate(`/api/${session.user.id}/${challengeID}`)
+
       return
     }
 
@@ -151,22 +162,73 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
 
         <button
           onClick={lintCode}
-          className="ml-4 px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 hover:underline border-2 my-3 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+          className="ml-4 mt-4 rounded-lg px-4 py-2 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
         >
           Check Code Style
         </button>
 
-        {linterOutput &&
-          linterOutput.map((message, index) => {
-            return (
-              <Fragment key={index}>
-                <p className="text-red-600">
-                  <span className="font-bold">{message.messageID} - </span>
-                  {message.message} on line {message.line}
-                </p>
-              </Fragment>
-            )
-          })}
+        {linterOutput && (
+          <table className="sm:inline-table w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+            <thead className="text-white">
+              {linterOutput.map((l, i) => {
+                return (
+                  <tr
+                    key={i}
+                    className={`${
+                      i > 0 && 'sm:hidden'
+                    } bg-gray-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none  sm:mb-0`}
+                  >
+                    <th className="p-3 text-left">Pylint Code</th>
+                    <th className="p-3 text-left">Description</th>
+                    <th className="p-3 text-left">Line Number</th>
+                  </tr>
+                )
+              })}
+            </thead>
+            <tbody className="flex-1 sm:flex-none">
+              {linterOutput.map((message, i) => {
+                return (
+                  <tr key={i} className="flex flex-col flex-nowrap sm:table-row  sm:mb-0">
+                    <td className="border-grey-light border hover:bg-gray-100 p-3 ">{message.messageID}</td>
+                    <td className="border-grey-light border hover:bg-gray-100 p-3 truncate">{message.message}</td>
+                    <td className="border-grey-light border hover:bg-gray-100 p-3">{message.line}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+            {/* <caption className="pt-8">Code Analysis Results</caption>
+            <thead>
+              <tr>
+                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                  Pylint Code
+                </th>
+                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                  Description
+                </th>
+                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                  Line Number
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {linterOutput.map((message, index) => {
+                return (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
+                      {message.messageID}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
+                      {message.message}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
+                      {message.line}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody> */}
+          </table>
+        )}
 
         {testCases.map((test, index) => {
           return (

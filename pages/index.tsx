@@ -1,8 +1,6 @@
 import type { NextPage } from 'next'
-import heroCode from '../public/hero-code.png'
-import Link from 'next/link'
-import Image from 'next/image'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 const Home: NextPage = () => {
   const { status } = useSession()
@@ -50,9 +48,9 @@ const Home: NextPage = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full md:w-1/2 justify-center justify-items-center ml-10">
+        {/* <div className="flex flex-col w-full md:w-1/2 justify-center justify-items-center ml-10">
           <Image src={heroCode} alt="screenshot of python code" />
-        </div>
+        </div> */}
       </div>
     </div>
   )

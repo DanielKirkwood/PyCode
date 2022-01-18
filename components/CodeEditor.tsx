@@ -168,7 +168,8 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
         </button>
 
         {linterOutput && (
-          <table className="sm:inline-table w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+          <table className="sm:inline-table w-full flex flex-row flex-nowrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+            <caption>Code Analysis Results</caption>
             <thead className="text-white">
               {linterOutput.map((l, i) => {
                 return (
@@ -176,11 +177,11 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
                     key={i}
                     className={`${
                       i > 0 && 'sm:hidden'
-                    } bg-gray-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none  sm:mb-0`}
+                    } bg-gray-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0`}
                   >
                     <th className="p-3 text-left">Pylint Code</th>
                     <th className="p-3 text-left">Description</th>
-                    <th className="p-3 text-left">Line Number</th>
+                    <th className="p-3 text-left">Line</th>
                   </tr>
                 )
               })}
@@ -188,45 +189,16 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
             <tbody className="flex-1 sm:flex-none">
               {linterOutput.map((message, i) => {
                 return (
-                  <tr key={i} className="flex flex-col flex-nowrap sm:table-row  sm:mb-0">
-                    <td className="border-grey-light border hover:bg-gray-100 p-3 ">{message.messageID}</td>
-                    <td className="border-grey-light border hover:bg-gray-100 p-3 truncate">{message.message}</td>
+                  <tr key={i} className="flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0 ">
+                    <td className="border-grey-light border hover:bg-gray-100 p-3 border-b-0 ">{message.messageID}</td>
+                    <td className="border-grey-light border border-b-0 hover:bg-gray-100 p-3 truncate">
+                      {message.message}
+                    </td>
                     <td className="border-grey-light border hover:bg-gray-100 p-3">{message.line}</td>
                   </tr>
                 )
               })}
             </tbody>
-            {/* <caption className="pt-8">Code Analysis Results</caption>
-            <thead>
-              <tr>
-                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
-                  Pylint Code
-                </th>
-                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
-                  Description
-                </th>
-                <th className="px-6 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
-                  Line Number
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {linterOutput.map((message, index) => {
-                return (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
-                      {message.messageID}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
-                      {message.message}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
-                      {message.line}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody> */}
           </table>
         )}
 

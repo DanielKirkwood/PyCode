@@ -168,38 +168,42 @@ export const CodeEditor = ({ title, testCases, challengeID }: Props) => {
         </button>
 
         {linterOutput && (
-          <table className="sm:inline-table w-full flex flex-row flex-nowrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
-            <caption>Code Analysis Results</caption>
-            <thead className="text-white">
-              {linterOutput.map((l, i) => {
-                return (
-                  <tr
-                    key={i}
-                    className={`${
-                      i > 0 && 'sm:hidden'
-                    } bg-gray-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0`}
-                  >
-                    <th className="p-3 text-left">Pylint Code</th>
-                    <th className="p-3 text-left">Description</th>
-                    <th className="p-3 text-left">Line</th>
-                  </tr>
-                )
-              })}
-            </thead>
-            <tbody className="flex-1 sm:flex-none">
-              {linterOutput.map((message, i) => {
-                return (
-                  <tr key={i} className="flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0 ">
-                    <td className="border-grey-light border hover:bg-gray-100 p-3 border-b-0 ">{message.messageID}</td>
-                    <td className="border-grey-light border border-b-0 hover:bg-gray-100 p-3 truncate">
-                      {message.message}
-                    </td>
-                    <td className="border-grey-light border hover:bg-gray-100 p-3">{message.line}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <>
+            <h3 className="leading-normal pt-4 text-center">Code Analysis Results</h3>
+            <table className="sm:inline-table w-full flex flex-row flex-nowrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+              <thead className="text-white">
+                {linterOutput.map((l, i) => {
+                  return (
+                    <tr
+                      key={i}
+                      className={`${
+                        i > 0 && 'sm:hidden'
+                      } bg-gray-400 flex flex-col flex-nowrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0`}
+                    >
+                      <th className="p-3 text-left">Pylint Code</th>
+                      <th className="p-3 text-left">Description</th>
+                      <th className="p-3 text-left">Line</th>
+                    </tr>
+                  )
+                })}
+              </thead>
+              <tbody className="flex-1 sm:flex-none">
+                {linterOutput.map((message, i) => {
+                  return (
+                    <tr key={i} className="flex flex-col flex-nowrap sm:table-row mb-2 sm:mb-0 ">
+                      <td className="border-grey-light border hover:bg-gray-100 p-3 border-b-0 ">
+                        {message.messageID}
+                      </td>
+                      <td className="border-grey-light border border-b-0 hover:bg-gray-100 p-3 truncate">
+                        {message.message}
+                      </td>
+                      <td className="border-grey-light border hover:bg-gray-100 p-3">{message.line}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </>
         )}
 
         {testCases.map((test, index) => {

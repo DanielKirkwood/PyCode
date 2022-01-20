@@ -126,6 +126,7 @@ const Login: NextPage = () => {
                   type="text"
                   name="email"
                   id="email"
+                  autoComplete="email"
                   placeholder="Email"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
@@ -147,6 +148,7 @@ const Login: NextPage = () => {
                 </div>
                 <input
                   id="password"
+                  autoComplete="current-password"
                   type={`${showPassword ? 'text' : 'password'}`}
                   placeholder="Password"
                   onChange={(e) => setPassword(e.target.value)}
@@ -157,7 +159,7 @@ const Login: NextPage = () => {
             </div>
 
             {error && (
-              <div className="flex items-center justify-center text-red-600 text-sm sm:text-base tracking-wide py-2 w-full">
+              <div className="flex items-center justify-center text-red-600 text-sm sm:text-base tracking-wide pb-4 w-full">
                 <span>{error}</span>
               </div>
             )}
@@ -188,76 +190,6 @@ const Login: NextPage = () => {
           </Link>
         </div>
       </div>
-      {/* <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        {messageVisible && (
-          <PopupMessage type={message.type} body={message.body} onAnimationEnd={() => setMessageVisible(false)} />
-        )}
-        <div className="px-8 py-6 mt-4 text-center sm:text-left bg-white shadow-lg">
-          <h3 className="text-2xl font-bold text-center">Sign in to your account</h3>
-          <form onSubmit={onFormSubmit}>
-            <div className="mt-4 w-52 sm:w-96">
-              <div>
-                <label className="block" htmlFor="email">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="text"
-                  placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  ref={emailInput}
-                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div className="mt-4">
-                <label className="block" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              {error && <span className="text-xs tracking-wide text-red-600">{error}</span>}
-              <div className="flex flex-col items-center sm:flex-row sm:items-baseline justify-between">
-                <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
-                  Sign in
-                </button>
-                <Link href="/">
-                  <a className="mt-5 sm:mt-0 text-sm text-blue-600 hover:underline">Forgot password?</a>
-                </Link>
-              </div>
-            </div>
-          </form>
-          <div className="flex justify-between items-center mt-3">
-            <hr className="w-full" />
-            <span className="p-2 text-gray-400 mb-1">OR</span>
-            <hr className="w-full" />
-          </div>
-          <button
-            onClick={() => signIn('google')}
-            className="relative block h-12 mt-3 text-google-button-grey w-full rounded border  bg-white hover:bg-gray-50 "
-          >
-            <FcGoogle className="absolute top-1/2 transform -translate-y-1/2 left-10 text-xl" />
-            Sign in with Google
-          </button>
-          <button
-            onClick={() => signIn('github')}
-            className="relative block h-12 mt-3 text-white w-full rounded bg-gray-900 hover:bg-gray-700"
-          >
-            <FaGithub className="absolute top-1/2 transform -translate-y-1/2 left-10 text-xl" />
-            Sign in with GitHub
-          </button>
-          <Link href="/signup">
-            <a className="block text-sm text-center pt-5 text-blue-600 hover:underline">Not got an account?</a>
-          </Link>
-        </div>
-      </div> */}
     </section>
   )
 }

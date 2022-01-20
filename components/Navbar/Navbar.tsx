@@ -10,7 +10,7 @@ type Props = {
 function Navbar({ status }: Props): JSX.Element {
   const [menuOpen, setMenuOpen] = useState(false)
   return (
-    <header className="text-white body-font bg-blue-500">
+    <header className="text-white body-font bg-blue-500 font-display">
       <div className=" flex p-5 items-center px-10">
         <a className="title-font font-medium text-xl justify-center align-middle">PyCode</a>
         <NewNav status={status} />

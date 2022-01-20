@@ -7,7 +7,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        'google-button-grey': '808485',
+        'google-button-grey': '#808485',
       },
 
       keyframes: {

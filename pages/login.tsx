@@ -91,7 +91,7 @@ const Login: NextPage = () => {
         <h1 className="font-medium self-center text-xl sm:text-2xl uppercase text-gray-800">Login</h1>
         <button
           onClick={() => signIn('google')}
-          className="relative mt-6 border rounded-md py-2 text-sm text-gray-800 bg-gray-100 hover:bg-gray-200"
+          className="relative mt-6 border rounded-md py-2 text-sm text-google-button-grey bg-white hover:bg-gray-100 "
         >
           <span className="absolute left-0 top-0 flex items-center justify-center h-full w-10 text-blue-500">
             <FcGoogle className="align-middle" />
@@ -135,7 +135,7 @@ const Login: NextPage = () => {
               </div>
             </div>
             <div className="flex flex-col mb-6">
-              <label htmlFor="email" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+              <label htmlFor="password" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
                 Password:
               </label>
               <div className="relative">

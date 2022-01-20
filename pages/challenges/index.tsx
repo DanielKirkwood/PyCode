@@ -17,7 +17,7 @@ const Challenges: NextPage = () => {
   }
 
   return (
-    <>
+    <section>
       {error && <h1>Failed to load</h1>}
       {!data && <SkeletonChallengeList numChallenges={limit} />}
       {data && (
@@ -33,7 +33,7 @@ const Challenges: NextPage = () => {
           />
         </>
       )}
-    </>
+    </section>
   )
 }
 

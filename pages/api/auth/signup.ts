@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import clientPromise from 'lib/db/mongodb'
 import { hashPassword } from 'lib/auth/auth'
+import clientPromise from 'lib/db/mongodb'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 const MONGODB_DB = process.env.MONGODB_DB
 
@@ -108,6 +108,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     image: '/public/default_user.png',
     emailVerified: null,
     role: 'user',
+    nameSearch: name.split(' '),
   })
 
   res.status(201).json({

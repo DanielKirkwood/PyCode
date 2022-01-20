@@ -1,10 +1,8 @@
 import CodeEditor from '@/components/CodeEditor'
-import { CommentList } from '@/components/CommentList'
 import { getOne } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { GetServerSideProps, NextPage } from 'next'
 import { useSession } from 'next-auth/react'
-import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 
 interface TestCase {
@@ -33,83 +31,52 @@ const ChallengePage: NextPage<Props> = ({ challenge }) => {
   const router: NextRouter = useRouter()
 
   return (
-    <div className="py-8 w-full flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full">
-        {!challenge && (
-          <div className="text-center">
-            <h1 className="text-2xl mb-6">
-              There was an error getting this challenge. Ensure the url is correct or...
-            </h1>
-            <Link href="/challenges">
-              <a
-                className="px-6 py-2 mt-4  bg-blue-600 rounded-lg hover:bg-blue-900 hover:underline text-white
-               font-bold my-3  shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-              >
-                Go to challenges page
-              </a>
-            </Link>
+    <section className="text-gray-600">
+      <div className="container mx-auto flex px-5 py-24 lg:flex-row flex-col items-center">
+        <div className="lg:flex-grow lg:pr-24 lg:w-1/2 flex flex-col lg:items-start lg:text-left mb-16 items-center text-center w-full">
+          <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">{challenge.title}</h1>
+          <p className="mb-8 leading-relaxed">{challenge.description}</p>
+          <div className="flex justify-between items-center mt-3">
+            <hr className="w-full" />
+            <span className="text-gray-400 mb-1">Example</span>
+            <hr className="w-full" />
           </div>
-        )}
-        {challenge && (
-          <>
-            <h1 className="text-center text-2xl">{challenge.title}</h1>
-            <div className="grid grid-cols-12 gap-2 sm:gap-5">
-              <div className="text-center col-span-4 md:col-span-6 flex flex-col w-10/12">
+          <div>
+            <h3 className="text-lg font-bold">Inputs:</h3>
+            {challenge.testCases[0].inputs.map((input, index) => {
+              return (
+                <h3 key={index} className="text-lg">
+                  {input.inputName} = {input.inputValue}
+                </h3>
+              )
+            })}
+            <h3 className="text-lg font-bold">
+              Output: <span className="font-normal">{challenge.testCases[0].output}</span>
+            </h3>
+            {challenge.owner === session?.user.id && (
+              <>
                 <div className="flex justify-between items-center mt-3">
                   <hr className="w-full" />
-                  <span className="p-2 text-gray-400 mb-1">Description</span>
+                  <span className="p-2 text-gray-400 mb-1">Actions</span>
                   <hr className="w-full" />
                 </div>
                 <div>
-                  <h3 className="text-lg">{challenge.description}</h3>
+                  <button
+                    className="rounded-lg px-4 py-2 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
+                    onClick={() => router.push(`/challenges/edit/${challenge.id}`)}
+                  >
+                    Edit challenge
+                  </button>
                 </div>
-                <div className="flex justify-between items-center mt-3">
-                  <hr className="w-full" />
-                  <span className="p-2 text-gray-400 mb-1">Example</span>
-                  <hr className="w-full" />
-                </div>
-                <div>
-                  <h3 className="text-lg">Inputs:</h3>
-                  {challenge.testCases[0].inputs.map((input, index) => {
-                    return (
-                      <h3 key={index} className="text-lg">
-                        {input.inputName} = {input.inputValue}
-                      </h3>
-                    )
-                  })}
-                  <h3 className="text-lg">Output: {challenge.testCases[0].output}</h3>
-                  {challenge.owner === session?.user.id && (
-                    <>
-                      <div className="flex justify-between items-center mt-3">
-                        <hr className="w-full" />
-                        <span className="p-2 text-gray-400 mb-1">Actions</span>
-                        <hr className="w-full" />
-                      </div>
-                      <div>
-                        <button
-                          className="text-white bg-blue-500 border-0  py-2 px-4 focus:outline-none hover:bg-blue-600 rounded"
-                          onClick={() => router.push(`/challenges/edit/${challenge.id}`)}
-                        >
-                          Edit challenge
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="col-span-8 md:col-span-6">
-                <CodeEditor title={challenge.title} testCases={challenge.testCases} challengeID={challenge.id} />
-              </div>
-            </div>
-            {(session?.user.role === 'admin' ||
-              session?.user.role === 'super-admin' ||
-              challenge.owner === session?.user.id) && (
-              <CommentList challengeID={challenge.id} isVerified={challenge.verified} />
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
+        <div className="md:max-w-4xl w-full  ">
+          <CodeEditor title={challenge.title} testCases={challenge.testCases} challengeID={challenge.id} />
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 

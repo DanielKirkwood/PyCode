@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
-import heroCode from '../public/hero-code.png'
-import Link from 'next/link'
-import Image from 'next/image'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import heroImage from '../public/hero-code.png'
 
 const Home: NextPage = () => {
   const { status } = useSession()
@@ -11,50 +11,35 @@ const Home: NextPage = () => {
   if (typeof window !== 'undefined' && loading) return null
 
   return (
-    <div className="pt-24">
-      <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-        <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-          <p className="uppercase tracking-wide w-full">PyCode</p>
-          <h1 className="my-4 text-5xl font-bold leading-tight">Develop Your Python Skills</h1>
-          <p className="leading-normal text-2xl mb-6">Challenge yourself and others python coding ability</p>
-          <div className="flex flex-col items-center justify-center align-middle sm:justify-start sm:flex-row flex-wrap mx-auto w-full">
-            <Link href="/challenges">
+    <section className="text-gray-600">
+      <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+        <div className="lg:w-1/2 px-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+          <div>
+            <p className="uppercase tracking-wide w-full">PyCode</p>
+            <h1 className="sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Develop Your Python Skills</h1>
+            <p className="mb-8 leading-relaxed">Challenge yourself and others python coding ability</p>
+          </div>
+          <div className="flex flex-wrap justify-center ">
+            <Link href={status === 'unauthenticated' ? '/login' : '/challenges/create'}>
               <a
-                className="mr-2 hover:underline hover:text-white bg-blue-400 border-2 border-blue-400 text-white
-               font-bold rounded-lg my-3 py-2 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+                data-testid="call-to-action"
+                className="inline-flex text-white bg-blue-500 border-0 py-2 px-6 mb-2 focus:outline-none hover:bg-blue-600 rounded text-lg"
               >
+                {status === 'unauthenticated' ? 'Log in' : 'Create Challenge'}
+              </a>
+            </Link>
+            <Link href="/challenges">
+              <a className="md:ml-4 ml-4 mb-2 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">
                 Challenges
               </a>
             </Link>
-            {status === 'unauthenticated' && (
-              <Link href="/login">
-                <a
-                  data-testid="call to action"
-                  className="hover:underline border-blue-400 border-2 text-black
-               font-bold rounded-lg my-3 py-2 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-                >
-                  Login
-                </a>
-              </Link>
-            )}
-            {status === 'authenticated' && (
-              <Link href="/challenges/create">
-                <a
-                  data-testid="call to action"
-                  className="hover:underline border-blue-400 border-2 text-black
-               font-bold rounded-lg my-3 py-2 px-4 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-                >
-                  Create a challenge
-                </a>
-              </Link>
-            )}
           </div>
         </div>
-        <div className="flex flex-col w-full md:w-1/2 justify-center justify-items-center ml-10">
-          <Image src={heroCode} alt="screenshot of python code" />
+        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+          <Image className="object-cover object-center rounded" alt="hero" src={heroImage} />
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 

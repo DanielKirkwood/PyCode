@@ -62,6 +62,15 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
     setChallengeData(newFormData)
   }
 
+  const handleOutputChange = (event, testIndex: number) => {
+    const fieldValue = event.target.value
+
+    const newFormData = { ...challengeData }
+    newFormData.testCases[testIndex].output = fieldValue
+
+    setChallengeData(newFormData)
+  }
+
   const addTestInput = () => {
     const newFormData = { ...challengeData }
     newFormData.testCases[editableTestID].inputs.push({
@@ -128,7 +137,7 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
                 <ImCross
                   onClick={() => removeTestInput(j)}
-                  className="pr-2 text-left text-lg hover:text-red-500 hover:underline"
+                  className="inline-block align-middle pr-2 text-left text-lg hover:text-red-500 hover:underline"
                 />
                 <input
                   onChange={(e) => handleChange(e, j, testID)}
@@ -154,7 +163,7 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
           <td colSpan={2} />
           <td className="text-center px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 first:text-gray-900">
             <input
-              onChange={(e) => handleChange(e, 0, testID)}
+              onChange={(e) => handleOutputChange(e, testID)}
               type="text"
               name="output"
               id="output"
@@ -201,7 +210,7 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
                         </span>
                       ) : (
                         <span onClick={() => setEditableTestID(i)} className="hover:text-blue-500">
-                          <FiEdit2 />
+                          <FiEdit2 className="inline-block align-middle" />
                         </span>
                       )}
                     </h3>
@@ -257,7 +266,7 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
               <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
                 {challengeData.title}
                 <span onClick={() => setEditTitle(true)} className="hover:text-blue-500">
-                  <FiEdit2 />
+                  <FiEdit2 className="inline-block align-middle" />
                 </span>
               </h1>
             )}

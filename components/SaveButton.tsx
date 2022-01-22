@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react'
+import { AiFillSave } from 'react-icons/ai'
 import { BsCheck } from 'react-icons/bs'
 
 enum SavingState {
@@ -22,12 +23,16 @@ const SaveButton = ({ saving, onClick }: SaveButtonProps): ReactElement => {
     case SavingState.SAVED:
       display = (
         <>
-          <BsCheck /> <em>saved!</em>
+          <BsCheck className="align-middle inline-block " /> <em>saved!</em>
         </>
       )
       break
     case SavingState.NOT_SAVED:
-      display = <em>not saved - click here to save your work</em>
+      display = (
+        <>
+          <AiFillSave className="align-middle inline-block " /> <em>save changes</em>
+        </>
+      )
       break
     case SavingState.ERROR:
       display = <em>Sign in to save your code</em>
@@ -39,7 +44,7 @@ const SaveButton = ({ saving, onClick }: SaveButtonProps): ReactElement => {
   return (
     <button
       onClick={onClick}
-      className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 hover:underline border-2 my-3 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+      className="rounded-lg px-4 py-2 bg-blue-500 text-blue-100 hover:bg-blue-600 duration-300 text-md"
     >
       {display}
     </button>

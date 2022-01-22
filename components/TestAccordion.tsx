@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { FiCircle, FiCheckCircle, FiAlertCircle, FiPlayCircle } from 'react-icons/fi'
 import { BiChevronDownCircle, BiChevronUpCircle } from 'react-icons/bi'
+import { FiAlertCircle, FiCheckCircle, FiCircle, FiPlayCircle } from 'react-icons/fi'
 
 interface Props {
   inputs: {
@@ -64,22 +64,8 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
           executeCode()
         }}
         className={`
-          text-white
-          font-bold
-          uppercase
-          rounded-lg
-          text-sm
-          shadow
-          hover:shadow-lg
-          outline-none
-          focus:outline-none
-          px-3
-          py-2
-          mb-3
-          ease-linear
-          transition-all
-          duration-150
-          ${loading ? 'bg-gray-500' : 'bg-blue-500'}`}
+          rounded-lg px-4 py-2 bg-blue-500 text-blue-100 hover:bg-blue-600 duration-300
+          ${loading ? 'cursor-not-allowed disabled:opacity-50' : 'bg-blue-500'}`}
         type="button"
         disabled={loading}
       >
@@ -91,7 +77,7 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
         )}
         {!loading && (
           <>
-            <FiPlayCircle className="text-white mr-2" />
+            <FiPlayCircle className="text-white mr-2 inline-block align-middle" />
             <span>Run test {testNumber}</span>
           </>
         )}
@@ -105,11 +91,19 @@ const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
       >
         <div>
           Test {testNumber}
-          {!success && !error && <FiCircle className="ml-2" />}
-          {success && <FiCheckCircle className="ml-2 text-green-600" />}
-          {error && <FiAlertCircle className="ml-2 text-red-600" />}
+          {!success && !error && <FiCircle className="ml-2 align-middle inline-block" />}
+          {success && <FiCheckCircle className="ml-2 text-green-600 align-middle inline-block" />}
+          {error && <FiAlertCircle className="ml-2 text-red-600 align-middle inline-block" />}
         </div>
-        {open ? <BiChevronUpCircle /> : <BiChevronDownCircle />}
+        {open ? (
+          <BiChevronUpCircle
+            className={`inline-block align-middle ${error && 'text-red-600'} ${success && 'text-green-600'}`}
+          />
+        ) : (
+          <BiChevronDownCircle
+            className={`inline-block align-middle ${error && 'text-red-600'} ${success && 'text-green-600'}`}
+          />
+        )}
       </div>
       {open && (
         <div className="bg-gray-100 bg-opacity-50 p-3 pt-1 rounded-b-lg">

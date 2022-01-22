@@ -1,20 +1,17 @@
-import type { AppProps } from 'next/app'
-import { SessionProvider } from 'next-auth/react'
-import NavBar from '@/components/NavBar'
-import { IconContext } from 'react-icons'
-
-import '../styles/globals.css'
+import Layout from '@/components/Layout'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/material.css'
+import { SessionProvider } from 'next-auth/react'
+import type { AppProps } from 'next/app'
+import '../styles/globals.css'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <SessionProvider session={session} refetchInterval={5 * 60}>
-        <IconContext.Provider value={{ style: { verticalAlign: 'middle', display: 'inline-block' } }}>
-          <NavBar />
+        <Layout>
           <Component {...pageProps} />
-        </IconContext.Provider>
+        </Layout>
       </SessionProvider>
     </>
   )

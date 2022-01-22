@@ -1,3 +1,9 @@
+// /__tests__/ChallengeCard.unit.test.jsx
+
+/**
+ * @jest-environment jsdom
+ */
+
 import { render } from '@testing-library/react'
 import React from 'react'
 import ChallengeCard from '../ChallengeCard'
@@ -22,7 +28,7 @@ describe('ChallengeCard', () => {
 
     const titleNode = getByText(fakeChallenge.title)
     const descriptionNode = getByText(fakeChallenge.description)
-    const challengePageAnchorNode = getByText('Try Challenge')
+    const challengePageAnchorNode = getByText(/Try Challenge/)
 
     expect(titleNode).toHaveTextContent(fakeChallenge.title)
     expect(descriptionNode).toHaveTextContent(fakeChallenge.description)

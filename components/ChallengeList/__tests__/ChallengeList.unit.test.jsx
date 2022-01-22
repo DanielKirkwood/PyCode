@@ -1,3 +1,9 @@
+// /__tests__/ChallengeList.unit.test.jsx
+
+/**
+ * @jest-environment jsdom
+ */
+
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 import ChallengeList from '../ChallengeList'
@@ -24,9 +30,9 @@ describe('ChallengeList', () => {
 
     render(<ChallengeList data={fakeChallenges} />)
 
-    expect(screen.getAllByText('Try Challenge').length === fakeChallenges.length)
+    expect(screen.getAllByText(/Try Challenge/).length === fakeChallenges.length)
 
-    screen.getAllByText('Try Challenge').forEach((anchorTag, index) => {
+    screen.getAllByText(/Try Challenge/).forEach((anchorTag, index) => {
       expect(anchorTag).toHaveAttribute('href', `/challenges/${fakeChallenges[index]._id}`)
     })
   })

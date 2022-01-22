@@ -7,7 +7,7 @@
 import { render, screen } from '@testing-library/react'
 import { SessionProvider } from 'next-auth/react'
 import React from 'react'
-import Home from '../pages/index'
+import Home from '../../pages/index'
 
 jest.mock(
   'next/image',
@@ -41,7 +41,7 @@ describe('Home', () => {
   it('renders login button if user not signed in', () => {
     render(wrapWithSession(null, <Home />))
 
-    const button = screen.getByTestId('call-to-action')
+    const button = screen.getByTestId(/call-to-action/)
 
     expect(button).toBeInTheDocument()
 
@@ -56,7 +56,7 @@ describe('Home', () => {
 
     render(wrapWithSession(session, <Home />))
 
-    const button = screen.getByTestId('call-to-action')
+    const button = screen.getByTestId(/call-to-action/)
 
     expect(button).toBeInTheDocument()
 

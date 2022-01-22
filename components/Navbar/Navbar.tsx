@@ -1,6 +1,7 @@
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { FaBars } from 'react-icons/fa'
-import NewNav from './NavDesktop'
+import NavDesktop from './NavDesktop'
 import NavMobile from './NavMobile'
 
 type Props = {
@@ -12,11 +13,13 @@ function Navbar({ status }: Props): JSX.Element {
   return (
     <header className="text-white body-font bg-blue-500 font-display">
       <div className=" flex p-5 items-center px-10">
-        <a className="title-font font-medium text-xl justify-center align-middle">PyCode</a>
-        <NewNav status={status} />
+        <Link href="/">
+          <a className="title-font font-medium text-xl justify-center align-middle">PyCode</a>
+        </Link>
+        <NavDesktop status={status} />
         <button
           type="button"
-          aria-label="Toggle mobile menu"
+          aria-label="toggle mobile menu"
           onClick={() => setMenuOpen(!menuOpen)}
           className="rounded md:hidden focus:outline-none focus:ring focus:ring-white focus:ring-opacity-50 text-xl cursor-pointer ml-auto items-center justify-center"
         >

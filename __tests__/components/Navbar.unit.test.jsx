@@ -7,7 +7,7 @@
 import { render, screen } from '@testing-library/react'
 import mockRouter from 'next-router-mock'
 import React from 'react'
-import Navbar from '../Navbar'
+import Navbar from '../../components/Navbar/Navbar'
 
 jest.mock('next/link', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires

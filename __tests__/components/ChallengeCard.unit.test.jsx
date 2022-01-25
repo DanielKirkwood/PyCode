@@ -6,7 +6,7 @@
 
 import { render } from '@testing-library/react'
 import React from 'react'
-import ChallengeCard from '../ChallengeCard'
+import ChallengeCard from '../../components/ChallengeCard/ChallengeCard'
 
 jest.mock('next/link', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires

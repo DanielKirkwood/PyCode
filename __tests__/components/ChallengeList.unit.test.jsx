@@ -6,7 +6,7 @@
 
 import { render, screen } from '@testing-library/react'
 import React from 'react'
-import ChallengeList from '../ChallengeList'
+import ChallengeList from '../../components/ChallengeList/ChallengeList'
 
 describe('ChallengeList', () => {
   test('should display a list of challenges', () => {

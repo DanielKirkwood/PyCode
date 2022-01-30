@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event'
 import Checkbox from '../../components/Checkbox/Checkbox'
 
 describe('Checkbox', () => {
-  test('should render unchecked/checked checkbox', () => {
+  test('should update checked property when re-rendered with updated value', () => {
     const mockedOnToggle = jest.fn()
 
     const { rerender } = render(<Checkbox text="text" value={false} handleCheckboxToggle={mockedOnToggle} />)

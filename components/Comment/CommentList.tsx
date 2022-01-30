@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import useSWR from 'swr'
-import Checkbox from './Checkbox/Checkbox'
+import Checkbox from '../Checkbox/Checkbox'
 import CommentCard from './CommentCard'
 
 interface Props {

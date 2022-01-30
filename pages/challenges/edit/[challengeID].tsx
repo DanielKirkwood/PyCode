@@ -4,6 +4,7 @@ import clientPromise from 'lib/db/mongodb'
 import type { GetServerSideProps, NextPage } from 'next'
 import { NextRouter, useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
+import { AiOutlinePlus } from 'react-icons/ai'
 import { FiEdit2 } from 'react-icons/fi'
 import { ImCross } from 'react-icons/im'
 
@@ -88,6 +89,20 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
 
   const saveTest = () => {
     setEditableTestID(null)
+  }
+
+  const addTestCase = () => {
+    const newFormData = { ...challengeData }
+    newFormData.testCases.push({
+      inputs: [
+        {
+          inputName: '',
+          inputValue: '',
+        },
+      ],
+      output: '',
+    })
+    setChallengeData(newFormData)
   }
 
   const deleteTestCase = () => {
@@ -246,6 +261,23 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
                 </Fragment>
               )
             })}
+
+            <div className="flex justify-between items-center mt-3">
+              <hr className="w-1/2" />
+
+              <button
+                type="button"
+                onClick={() => addTestCase()}
+                className="inline-flex items-center font-bold text-blue-500 hover:text-blue-700 hover:underline text-xs text-center mx-5"
+              >
+                <span>
+                  <AiOutlinePlus className="inline-block align-middle" />
+                </span>
+                <span className="ml-2">Add test case</span>
+              </button>
+
+              <hr className="w-1/2" />
+            </div>
           </div>
         )
       default:

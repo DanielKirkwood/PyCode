@@ -90,6 +90,13 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
     setEditableTestID(null)
   }
 
+  const deleteTestCase = () => {
+    const newFormData = { ...challengeData }
+    newFormData.testCases.splice(editableTestID, 1)
+    setChallengeData(newFormData)
+    setEditableTestID(null)
+  }
+
   const handleSubmit = async () => {
     const response = await fetch(`/api/challenges/${challenge.id}`, {
       method: 'PATCH',
@@ -206,6 +213,9 @@ const EditChallengePage: NextPage<Props> = ({ challenge }) => {
                           </button>
                           <button className="hover:text-blue-500 hover:underline pl-2" onClick={() => addTestInput()}>
                             add input
+                          </button>
+                          <button className="hover:text-blue-500 hover:underline pl-2" onClick={() => deleteTestCase()}>
+                            delete test
                           </button>
                         </span>
                       ) : (

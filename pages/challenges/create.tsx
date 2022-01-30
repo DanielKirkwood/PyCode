@@ -52,8 +52,7 @@ const Create: NextPage = () => {
 
   const addTestInput = () => {
     const newFormData = { ...challengeData }
-    console.log('🚀 ~ file: create.tsx ~ line 61 ~ addTestInput ~ newFormData', newFormData)
-    console.log('🚀 ~ file: create.tsx ~ line 62 ~ addTestInput ~ editableTestID', editableTestID)
+
     newFormData.testCases[editableTestID].inputs.push({
       inputName: '',
       inputValue: '',
@@ -119,8 +118,6 @@ const Create: NextPage = () => {
     const data = await response.json()
 
     if (data.success) {
-      console.log(data)
-
       router.push(`/challenges/${data.payload.insertID}`)
       return
     }

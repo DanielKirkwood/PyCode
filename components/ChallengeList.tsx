@@ -5,6 +5,7 @@ interface Challenge {
   _id: number
   title: string
   description: string
+  verified: boolean
 }
 
 interface Props {
@@ -20,6 +21,7 @@ const ChallengeList = ({ data }: Props) => {
             id={challenge._id}
             title={challenge.title}
             description={challenge.description}
+            verified={challenge.verified}
             key={challenge._id}
           />
         ))}

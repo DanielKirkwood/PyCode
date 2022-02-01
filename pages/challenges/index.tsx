@@ -2,15 +2,26 @@ import ChallengeList from '@/components/ChallengeList'
 import Pagination from '@/components/Pagination'
 import SkeletonChallengeList from '@/components/SkeletonChallengeList'
 import type { NextPage } from 'next'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import useSWR from 'swr'
 
 const Challenges: NextPage = () => {
+  const { data: session } = useSession()
+  let isAdmin = false
+  if (session?.user.role === 'admin' || session?.user.role === 'super-admin') {
+    isAdmin = true
+  }
+
   const [limit] = useState<number>(20)
   const [skip, setSkip] = useState<number>(0)
 
   const fetcher = (url) => fetch(url).then((res) => res.json())
-  const { data, error } = useSWR(`/api/challenges?limit=${limit}&skip=${skip}`, fetcher)
+
+  const { data, error } = useSWR(
+    isAdmin ? `/api/challenges?admin=true&limit=${limit}&skip=${skip}` : `/api/challenges?limit=${limit}&skip=${skip}`,
+    fetcher
+  )
 
   function onSkipBtnClick(n: number): void {
     setSkip(n)

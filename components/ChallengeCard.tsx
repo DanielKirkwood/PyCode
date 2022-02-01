@@ -1,10 +1,12 @@
-import React from 'react'
 import Link from 'next/link'
+import React from 'react'
+import { TiTick } from 'react-icons/ti'
 
 interface Props {
   id: number
   title: string
   description: string
+  verified: boolean
 }
 
 const ChallengeCard = (props: Props) => {
@@ -13,7 +15,10 @@ const ChallengeCard = (props: Props) => {
       <div className="flex items-center border-b border-gray-200 pb-6">
         <div className="flex items-start justify-between w-full">
           <div className="pl-3 w-full">
-            <p className="text-xl font-medium leading-5 text-gray-800">{props.title}</p>
+            <p className="text-xl font-medium leading-5 text-gray-800">
+              {props.title}
+              {props.verified === true && <TiTick className="ml-2 text-blue-600 align-middle inline-block" />}
+            </p>
           </div>
         </div>
       </div>

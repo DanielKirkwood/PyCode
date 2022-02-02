@@ -1,11 +1,11 @@
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
+import { verifyPassword } from 'lib/auth/auth'
+import clientPromise from 'lib/db/mongodb'
 import { NextApiHandler } from 'next'
 import NextAuth from 'next-auth'
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-import clientPromise from 'lib/db/mongodb'
-import { verifyPassword } from 'lib/auth/auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
-import CredentialsProvider from 'next-auth/providers/credentials'
 
 const MONGODB_DB = process.env.MONGODB_DB
 const NODE_ENV = process.env.NODE_ENV
@@ -56,9 +56,11 @@ const authHandler: NextApiHandler = async (req, res) =>
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization:
+          'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
         profile(profile) {
           return {
-            id: profile.id,
+            id: profile.sub,
             name: profile.name,
             email: profile.email,
             image: profile.picture,
@@ -90,8 +92,6 @@ const authHandler: NextApiHandler = async (req, res) =>
             console.error("Password doesn't match")
             return null
           }
-
-
 
           return { email: user.email, name: user.name, image: user.image, role: user.role }
         },

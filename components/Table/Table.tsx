@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import useSWR from 'swr'
-import Pagination from './Pagination'
-import SearchBar from './SearchBar'
+import Pagination from '../Pagination'
+import SearchBar from '../SearchBar'
 import TableDisplay from './TableDisplay'
 
 type Props = {

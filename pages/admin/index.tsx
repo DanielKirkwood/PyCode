@@ -1,4 +1,4 @@
-import Table from '@/components/Table'
+import Table from '@/components/Table/Table'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'

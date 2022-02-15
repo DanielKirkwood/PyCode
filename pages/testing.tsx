@@ -1,4 +1,4 @@
-import Table from '@/components/Table'
+import Table from '@/components/Table/Table'
 import type { NextPage } from 'next'
 
 const Testing: NextPage = () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useSWR from 'swr'
-import Pagination from '../Pagination'
+import Pagination from '../Pagination/Pagination'
 import SearchBar from '../SearchBar'
 import TableDisplay from './TableDisplay'
 

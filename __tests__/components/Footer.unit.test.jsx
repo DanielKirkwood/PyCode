@@ -1,4 +1,4 @@
-// /__tests__/Checkbox.unit.test.jsx
+// /__tests__/Footer.unit.test.jsx
 
 /**
  * @jest-environment jsdom

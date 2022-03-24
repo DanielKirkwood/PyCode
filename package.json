@@ -13,8 +13,8 @@
     "lint.fix": "next lint --fix",
     "test.jest": "jest",
     "test.jest.watch": "jest --watch",
-    "test.cypress": "cypress open --config baseUrl=http://localhost:3000",
-    "test.cypress:prod": "cypress run --config baseUrl=https://www.pycode.codes"
+    "test.cypress": "cypress open --config baseUrl=http://localhost:3000 --env 'NODE_ENV'='development'",
+    "test.cypress:prod": "cypress run --config baseUrl=https://www.pycode.codes --env 'NODE_ENV'='production'"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^0.0.2-next.285",

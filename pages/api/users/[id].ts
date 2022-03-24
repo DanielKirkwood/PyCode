@@ -1,5 +1,5 @@
 import clientPromise from 'lib/db/mongodb'
-import { getUser, updateUser } from 'lib/db/users'
+import { deleteOne, getUser, updateUser } from 'lib/db/users'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -72,6 +72,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
       break
     case 'DELETE':
+      const status = await deleteOne(users, id.toString())
+      if (status) {
+        res.status(200).json({
+          success: true,
+          payload: {
+            message: `User with id ${id} deleted successfully.`,
+          },
+        })
+        return
+      }
+
+      res.status(500).json({
+        success: false,
+        payload: {
+          message: `User with id ${id} could not be deleted.`,
+        },
+      })
       break
     default:
       res.setHeader('Allow', ['GET', 'DELETE', 'PATCH'])

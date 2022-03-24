@@ -1,6 +1,6 @@
 {
   "name": "pycode",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": "14.x"
@@ -12,9 +12,9 @@
     "lint": "next lint",
     "lint.fix": "next lint --fix",
     "test.jest": "jest",
-    "test..jest.watch": "jest --watch",
-    "test.cypress.open": "cypress open",
-    "test,cypress.run": "cypress run"
+    "test.jest.watch": "jest --watch",
+    "test.cypress": "cypress open --config baseUrl=http://localhost:3000",
+    "test.cypress:prod": "cypress run --config baseUrl=https://www.pycode.codes"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^0.0.2-next.285",
@@ -35,6 +35,7 @@
     "@babel/core": "^7.15.8",
     "@next/eslint-plugin-next": "^11.1.2",
     "@tailwindcss/forms": "^0.4.0",
+    "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.11.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",

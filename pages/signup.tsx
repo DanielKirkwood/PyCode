@@ -84,7 +84,7 @@ const Login: NextPage = () => {
         <div className="mt-6">
           <form onSubmit={onFormSubmit}>
             <div className="flex flex-col mb-6">
-              <label htmlFor="email" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+              <label htmlFor="name" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
                 Full Name:
               </label>
               <div className="relative">
@@ -141,6 +141,7 @@ const Login: NextPage = () => {
                 </div>
                 <input
                   id="password"
+                  name="password"
                   autoComplete="new-password"
                   type={`${showPassword ? 'text' : 'password'}`}
                   placeholder="Password"
@@ -151,7 +152,7 @@ const Login: NextPage = () => {
               </div>
             </div>
             <div className="flex flex-col mb-6">
-              <label htmlFor="password" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+              <label htmlFor="confirmPassword" className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
                 Confirm Password:
               </label>
               <div className="relative">
@@ -167,6 +168,7 @@ const Login: NextPage = () => {
                 </div>
                 <input
                   id="confirmPassword"
+                  name="confirmPassword"
                   autoComplete="new-password"
                   type={`${showPassword ? 'text' : 'password'}`}
                   placeholder="Confirm Password"

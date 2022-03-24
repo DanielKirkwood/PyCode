@@ -11,8 +11,10 @@
     "start": "next start",
     "lint": "next lint",
     "lint.fix": "next lint --fix",
-    "test": "jest",
-    "test.watch": "jest --watch"
+    "test.jest": "jest",
+    "test..jest.watch": "jest --watch",
+    "test.cypress.open": "cypress open",
+    "test,cypress.run": "cypress run"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^0.0.2-next.285",
@@ -46,6 +48,7 @@
     "@typescript-eslint/parser": "^4.33.0",
     "autoprefixer": "^10.3.7",
     "babel-jest": "^27.2.5",
+    "cypress": "^9.5.2",
     "eslint": "^7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-config-prettier": "^8.3.0",

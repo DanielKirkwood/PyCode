@@ -88,6 +88,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(422).json({
       success: false,
       payload: {
+        existingUser: checkExisting,
         error: {
           code: 422,
           message: `User with email: ${email} already exists.`,

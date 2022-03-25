@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Sign-up', () => {
+describe('Login', () => {
   let data
   let newUserId
   before(() => {
@@ -8,6 +8,7 @@ describe('Sign-up', () => {
       data = fData
 
       cy.request({
+        failOnStatusCode: false,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,6 +23,8 @@ describe('Sign-up', () => {
       }).then((res) => {
         if (res.body.success) {
           newUserId = res.body.payload.insertedId
+        } else {
+          newUserId = res.body.payload.existingUser._id
         }
       })
     })

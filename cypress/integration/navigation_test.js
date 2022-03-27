@@ -63,7 +63,7 @@ describe('Navigation', () => {
       cy.location('pathname').should('equal', '/')
     })
 
-    it.only('should allow full navigation when signed in', () => {
+    it('should allow full navigation when signed in', () => {
       cy.loginUser(data.user.email, data.user.password)
 
       cy.findAllByRole('button', { name: /Logout/i }).should('exist')

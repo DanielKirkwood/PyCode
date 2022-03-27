@@ -14,7 +14,7 @@
     "test.jest": "jest",
     "test.jest.watch": "jest --watch",
     "test.cypress": "cypress open --config baseUrl=http://localhost:3000 --env 'NODE_ENV'='development'",
-    "test.cypress:prod": "cypress run --config baseUrl=https://www.pycode.codes --env 'NODE_ENV'='production'"
+    "test.cypress:ci": "cypress run --config baseUrl=http://localhost:3000 --env 'NODE_ENV'='development'"
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^0.0.2-next.285",

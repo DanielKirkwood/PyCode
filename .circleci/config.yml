@@ -35,12 +35,6 @@ jobs:
       - store_artifacts:
           path: reports/junit
       - run:
-          name: Build Next.js project
-          command: yarn build
-      - run:
-          name: Start server
-          command: yarn start
-      - run:
           name: Run e2e tests with Cypress
           command: yarn test.cypress
 

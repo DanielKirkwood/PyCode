@@ -42,7 +42,7 @@ jobs:
           command: yarn start
       - run:
           name: Wait on server to start
-          command: 'yarn wait-on http://localhost:3000'
+          command: 'yarn wait-on 0.0.0.0:3000'
       - run:
           name: Run e2e tests with Cypress
           command: yarn test.cypress

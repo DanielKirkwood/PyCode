@@ -37,6 +37,7 @@ jobs:
       - run:
           name: start NextJs
           command: yarn dev
+          background: true
       - run:
           name: Run e2e tests with Cypress
           command: yarn test.cypress

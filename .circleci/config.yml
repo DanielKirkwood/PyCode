@@ -1,48 +1,157 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.7
+  cypress: cypress-io/cypress@1
+  codecov: codecov/codecov@1.2.3
+  win: circleci/windows@2.4.1
 
-jobs:
-  lint-and-test:
+executors:
+  with-chrome-and-firefox:
     docker:
-      - image: cimg/node:14.18
+      - image: "cypress/browsers:node14.17.0-chrome88-ff80"
+    resource_class: medium+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~ Commands ~~~~~~~~~~~~~~~~~~~~ #
+commands:
+  report-coverage:
+    description: |
+      Store coverage report as an artifact and send it to Codecov service.
     steps:
-      - checkout
-      - restore_cache:
-          name: "Restore Yarn Package Cache"
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: "Install Dependencies"
-          command: yarn install --immutable
-      - save_cache:
-          name: "Save Yarn Package Cache"
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - .yarn/cache
-            - .yarn/unplugged
-      - run:
-          name: "JavaScript Linter"
-          command: yarn lint
-      - run:
-          name: "JavaScript Test Suite"
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: reports/junit/
-          command: yarn test.jest --ci --runInBand --reporters=default --reporters=jest-junit
-      - store_test_results:
-          path: reports/junit
       - store_artifacts:
-          path: reports/junit
-      - run:
-          name: start NextJs
-          command: yarn dev
-          background: true
-      - run:
-          name: Run e2e tests with Cypress
-          command: yarn test.cypress
+          path: coverage
+      - run: npx nyc report --reporter=text || true
+      - codecov/upload:
+          file: coverage/coverage-final.json
+
+# ~~~~~~~~~~~~~~ Workflows ~~~~~~~~~~~~~~~~~~~~~~~~~ #
+linux-workflow: &linux-workflow
+  jobs:
+    # Setup
+    # 1. Install Cypress and Dependencies
+    # 2. Run linter
+    # 3. Run unit-tests
+    # 4. Run e2e-tests
+    - cypress/install:
+        name: "Setup Linux"
+        yarn: true
+        executor: with-chrome-and-firefox
+        build: "yarn build"
+        post-steps:
+          - run:
+               name: Print machine info ℹ️
+               command: yarn cypress info
+          - run:
+              name: Lint files
+              command: yarn lint
+          - run:
+              name: Run unit tests
+              environment:
+                JEST_JUNIT_OUTPUT_DIR: reports/junit/
+              command: yarn test.jest --ci --runInBand --reporters=default --reporters=jest-junit
+
+    # Run cypress
+    - cypress/run:
+        name: "E2E - Chrome - Linux"
+        browser: chrome
+        spec: cypress/integration/*
+        config: "baseUrl=http://localhost:3000"
+        environment:
+          NODE_ENV: development
+        executor: with-chrome-and-firefox
+        wait-on: "http://localhost:3000"
+        yarn: true
+        start: yarn start
+        record: true
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "E2E - Chrome"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
+
+    # Run E2E tests in Firefox
+    - cypress/run:
+        name: "E2E - Firefox - Linux"
+        browser: firefox
+        spec: cypress/integration/*
+        executor: with-chrome-and-firefox
+        wait-on: "http://localhost:3000"
+        yarn: true
+        start: yarn start
+        record: true
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "E2E - Firefox"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
+
+windows-workflow: &windows-workflow
+  jobs:
+    # Setup
+    # 1. Install Cypress and Dependencies
+    # 2. Run linter
+    # 3. Run unit-tests
+    # 4. Run e2e-tests
+    - cypress/install:
+        name: "Setup Windows"
+        yarn: true
+        executor:
+          # executor comes from the "windows" orb
+          name: win/default
+          shell: bash.exe
+          size: large
+        pre-steps:
+          - run:
+              name: Disabling Windows Defender
+              shell: powershell.exe
+              command: Set-MpPreference -DisableRealtimeMonitoring $true
+        build: yarn build
+        post-steps:
+          - run:
+               name: Print machine info ℹ️
+               command: yarn cypress info
+          - run:
+              name: Cypress cache list
+              command: yarn cypress cache list
+          - run:
+              name: Lint files
+              command: yarn lint
+          - run:
+              name: Run unit tests
+              environment:
+                JEST_JUNIT_OUTPUT_DIR: reports/junit/
+              command: yarn test.jest --ci --runInBand --reporters=default --reporters=jest-junit
+
+    # Run E2E tests in Windows in Electron
+    - cypress/run:
+        name: "E2E - Electron - Windows"
+        spec: cypress/integration/*
+        executor:
+          # executor comes from the "windows" orb
+          name: win/default
+          shell: bash.exe
+        wait-on: "http://localhost:3000"
+        yarn: true
+        start: yarn start
+        record: true
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "E2E - Electron - Windows"
+        requires:
+          - Setup Windows
+        post-steps:
+          - report-coverage
+        no-workspace: true
+        timeout: 30m
 
 workflows:
-  Lint_And_Test:
-    jobs:
-      - lint-and-test
+  linux:
+    <<: *linux-workflow
+  windows:
+    <<: *windows-workflow

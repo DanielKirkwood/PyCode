@@ -10,6 +10,8 @@ executors:
     docker:
       - image: "cypress/browsers:node14.17.0-chrome88-ff80"
     resource_class: medium+
+    environment:
+      NODE_ENV: development
 
 # ~~~~~~~~~~~~~~~~~~~~~~~ Commands ~~~~~~~~~~~~~~~~~~~~ #
 commands:
@@ -45,9 +47,9 @@ linux-workflow: &linux-workflow
               command: yarn lint
           - run:
               name: Run unit tests
+              command: yarn test.jest --ci --runInBand --reporters=default --reporters=jest-junit
               environment:
                 JEST_JUNIT_OUTPUT_DIR: reports/junit/
-              command: yarn test.jest --ci --runInBand --reporters=default --reporters=jest-junit
 
     # Run cypress
     - cypress/run:
@@ -55,8 +57,6 @@ linux-workflow: &linux-workflow
         browser: chrome
         spec: cypress/integration/*
         config: "baseUrl=http://localhost:3000"
-        environment:
-          NODE_ENV: development
         executor: with-chrome-and-firefox
         wait-on: "http://localhost:3000"
         yarn: true
@@ -105,6 +105,8 @@ windows-workflow: &windows-workflow
           name: win/default
           shell: bash.exe
           size: large
+          environment:
+            NODE_ENV: development
         pre-steps:
           - run:
               name: Disabling Windows Defender
@@ -135,6 +137,8 @@ windows-workflow: &windows-workflow
           # executor comes from the "windows" orb
           name: win/default
           shell: bash.exe
+          environment:
+            NODE_ENV: development
         wait-on: "http://localhost:3000"
         yarn: true
         start: yarn start

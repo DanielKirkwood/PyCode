@@ -62,7 +62,6 @@ linux-workflow: &linux-workflow
         name: "E2E - Chrome - Linux"
         browser: chrome
         spec: cypress/integration/*
-        config: "baseUrl=http://localhost:3000"
         executor: with-chrome-and-firefox
         wait-on: "http://localhost:3000"
         yarn: true

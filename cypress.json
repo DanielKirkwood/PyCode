@@ -1,5 +1,9 @@
 {
   "projectId": "j89pg3",
+  "baseUrl": "http://localhost:3000",
+  "env": {
+    "NODE_ENV": "development"
+  },
   "reporterOptions": {
     "mochaFile": "cypress/results/tests-[hash].xml",
     "toConsole": true

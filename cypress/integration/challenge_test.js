@@ -4,6 +4,33 @@ describe('Challenges Page', () => {
   context('unauthenticated user', () => {
     beforeEach(() => {
       cy.visit('/challenges')
+      cy.intercept('POST', '/api/code?execute=false', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          success: true,
+          payload: {
+            messages: [
+              {
+                line: 2,
+                message: 'Final newline missing',
+                messageID: 'C0304',
+                symbol: 'missing-final-newline',
+                type: 'convention',
+              },
+              {
+                line: 1,
+                message: "Unused argument 's'",
+                messageID: 'W0613',
+                symbol: 'unused-argument',
+                type: 'warning',
+              },
+            ],
+          },
+        },
+      }).as('lint')
     })
 
     it('should allow user to attempt challenge', () => {
@@ -29,6 +56,7 @@ describe('Challenges Page', () => {
       cy.findByRole('table').should('not.be.visible')
 
       cy.findByText(/Check Code Style/i).click()
+      cy.wait('@lint')
       cy.findByRole('table').should('be.visible')
 
       // check running tests - minimum 3 tests required

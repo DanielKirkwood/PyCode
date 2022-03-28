@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 
 describe('Sign-up', () => {
-  let data
+  let user
   before(() => {
-    cy.fixture('credentials').then((fData) => {
-      data = fData
+    cy.fixture('user.json').then((fData) => {
+      user = fData
     })
   })
 
@@ -20,9 +20,9 @@ describe('Sign-up', () => {
     cy.get('@submit').click()
     cy.findByText(/Please fill out all fields/i).should('exist')
 
-    cy.findByLabelText(/^Full Name/i).type(data.user.name)
-    cy.findByLabelText(/^Password/i).type(data.user.password)
-    cy.findByLabelText(/^Confirm Password/i).type(data.user.password)
+    cy.findByLabelText(/^Full Name/i).type(user.name)
+    cy.findByLabelText(/^Password/i).type(user.password)
+    cy.findByLabelText(/^Confirm Password/i).type(user.password)
 
     // check invalid email
     cy.findByLabelText(/^Email/i)
@@ -32,7 +32,7 @@ describe('Sign-up', () => {
     cy.findByText(/Email is not valid/i).should('exist')
     cy.findByLabelText(/^Email/i)
       .clear()
-      .type(data.user.email)
+      .type(user.email)
 
     // check mismatched password validation
     cy.findByLabelText(/^Confirm Password/i)
@@ -62,10 +62,10 @@ describe('Sign-up', () => {
     ).as('signupUser')
 
     // fill required fields
-    cy.findByLabelText(/^Full Name/i).type(data.user.name)
-    cy.findByLabelText(/^Email/i).type(data.user.email)
-    cy.findByLabelText(/^Password/i).type(data.user.password)
-    cy.findByLabelText(/^Confirm Password/i).type(data.user.password)
+    cy.findByLabelText(/^Full Name/i).type(user.name)
+    cy.findByLabelText(/^Email/i).type(user.email)
+    cy.findByLabelText(/^Password/i).type(user.password)
+    cy.findByLabelText(/^Confirm Password/i).type(user.password)
 
     // submit form and wait for API stubbed response
     cy.get('@submit').click()

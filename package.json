@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
+    "@cypress/code-coverage": "^3.9.12",
     "@next/eslint-plugin-next": "^11.1.2",
     "@tailwindcss/forms": "^0.4.0",
     "@testing-library/cypress": "^8.0.2",

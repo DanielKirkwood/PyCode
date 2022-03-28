@@ -27,7 +27,7 @@
 
 
 Cypress.Commands.add('login', () => {
-  cy.intercept('/api/auth/session', { fixture: 'credentials.json' }).as('session')
+  cy.intercept('/api/auth/session', { fixture: 'session.json' }).as('session')
 
   // Set the cookie for cypress.
   // It has to be a valid cookie so next-auth can decrypt it and confirm its validity.

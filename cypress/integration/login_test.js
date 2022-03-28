@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
 
 describe('Login', () => {
-  let data
+  let user
   let newUserId
   before(() => {
-    cy.fixture('credentials').then((fData) => {
-      data = fData
+    cy.fixture('user.json').then((fData) => {
+      user = fData
 
       cy.request({
         failOnStatusCode: false,
@@ -15,10 +15,10 @@ describe('Login', () => {
         },
         url: '/api/auth/signup',
         body: {
-          name: data.user.name,
-          email: data.user.email,
-          password: data.user.password,
-          confirmPassword: data.user.password,
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          confirmPassword: user.password,
         },
       }).then((res) => {
         if (res.body.success) {
@@ -52,12 +52,12 @@ describe('Login', () => {
 
     // check invalid email
     cy.findByLabelText(/Email/i).type('not an email')
-    cy.findByLabelText(/Password/i).type(data.user.password)
+    cy.findByLabelText(/Password/i).type(user.password)
     cy.get('@submit').click()
     cy.findByText(/Email is not valid/i).should('exist')
 
     // check email password do not match
-    cy.findByLabelText(/Email/i).clear().type(data.user.email)
+    cy.findByLabelText(/Email/i).clear().type(user.email)
     cy.findByLabelText(/Password/i)
       .clear()
       .type('incorrect password')
@@ -67,8 +67,8 @@ describe('Login', () => {
 
   it('should login existing user', () => {
     // fill required fields
-    cy.findByLabelText(/Email/i).type(data.user.email)
-    cy.findByLabelText(/Password/i).type(data.user.password)
+    cy.findByLabelText(/Email/i).type(user.email)
+    cy.findByLabelText(/Password/i).type(user.password)
 
     cy.get('@submit').click()
     cy.wait(3000)

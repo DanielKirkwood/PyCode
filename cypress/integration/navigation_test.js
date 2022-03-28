@@ -2,49 +2,10 @@
 
 describe('Navigation', () => {
   context('Desktop resolution', () => {
-    let data
-    let userID
-    before(() => {
-      cy.fixture('credentials').then((fData) => {
-        data = fData
-
-        cy.request({
-          failOnStatusCode: false,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          url: '/api/auth/signup',
-          body: {
-            name: data.user.name,
-            email: data.user.email,
-            password: data.user.password,
-            confirmPassword: data.user.password,
-          },
-        }).then((res) => {
-          if (res.body.success) {
-            userID = res.body.payload.insertedId
-          } else {
-            userID = res.body.payload.existingUser._id
-          }
-        })
-      })
-    })
-
     beforeEach(() => {
       // run the tests in desktop browser with 720p  monitor
       cy.viewport(1280, 720)
       cy.visit('/')
-    })
-
-    after(() => {
-      cy.request({
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        url: `/api/users/${userID}`,
-      })
     })
 
     it('should allow restricted navigation when signed out', () => {
@@ -64,7 +25,8 @@ describe('Navigation', () => {
     })
 
     it('should allow full navigation when signed in', () => {
-      cy.loginUser(data.user.email, data.user.password)
+      cy.login()
+      cy.visit('/')
 
       cy.findAllByRole('button', { name: /Logout/i }).should('exist')
 

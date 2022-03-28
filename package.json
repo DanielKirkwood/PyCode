@@ -13,6 +13,7 @@
     "lint:fix": "next lint --fix",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
+    "test:jest:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
     "test:cypress:open": "cypress open --config baseUrl=http://localhost:3000 --env 'NODE_ENV'='development'",
     "test:cypress:ci": "cypress run --config baseUrl=http://localhost:3000 --env 'NODE_ENV'='development'"
   },

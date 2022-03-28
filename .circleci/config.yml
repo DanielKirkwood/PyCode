@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   cypress: cypress-io/cypress@1
+  node: circleci/node@5.0.1
   codecov: codecov/codecov@1.2.3
   win: circleci/windows@4.0.0
 
@@ -45,11 +46,19 @@ linux-workflow: &linux-workflow
           - run:
               name: Lint files
               command: yarn lint
-          - run:
-              name: Run unit tests
-              command: yarn test:jest --ci --runInBand --reporters=default --reporters=jest-junit
-              environment:
-                JEST_JUNIT_OUTPUT_DIR: reports/junit/
+
+    - node/test:
+        pkg-manager: yarn
+        run-command: test:jest:ci
+        test-results-for: jest
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "Unit Tests - Linux"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
 
     # Run cypress
     - cypress/run:
@@ -121,11 +130,19 @@ windows-workflow: &windows-workflow
           - run:
               name: Lint files
               command: yarn lint
-          - run:
-              name: Run unit tests
-              environment:
-                JEST_JUNIT_OUTPUT_DIR: reports/junit/
-              command: yarn test:jest --ci --runInBand --reporters=default --reporters=jest-junit
+
+    - node/test:
+        pkg-manager: yarn
+        run-command: test:jest:ci
+        test-results-for: jest
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "Unit Tests - Linux"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
 
     # Run E2E tests in Windows in Electron
     - cypress/run:

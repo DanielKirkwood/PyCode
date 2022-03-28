@@ -48,6 +48,7 @@ linux-workflow: &linux-workflow
               command: yarn lint
 
     - node/test:
+        version: 14
         pkg-manager: yarn
         run-command: test:jest:ci
         test-results-for: jest
@@ -128,6 +129,7 @@ windows-workflow: &windows-workflow
               command: yarn lint
 
     - node/test:
+        version: 14
         pkg-manager: yarn
         run-command: test:jest:ci
         test-results-for: jest

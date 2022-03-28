@@ -1,5 +1,6 @@
 {
   "projectId": "j89pg3",
+  "defaultCommandTimeout": 60000,
   "baseUrl": "http://localhost:3000",
   "env": {
     "NODE_ENV": "development",

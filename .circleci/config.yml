@@ -51,10 +51,6 @@ linux-workflow: &linux-workflow
         pkg-manager: yarn
         run-command: test:jest:ci
         test-results-for: jest
-        parallel: true
-        parallelism: 5
-        ci-build-id: ${CIRCLE_SHA1:0:8}
-        group: "Unit Tests - Linux"
         requires:
           - Setup Linux
         post-steps:
@@ -135,10 +131,6 @@ windows-workflow: &windows-workflow
         pkg-manager: yarn
         run-command: test:jest:ci
         test-results-for: jest
-        parallel: true
-        parallelism: 5
-        ci-build-id: ${CIRCLE_SHA1:0:8}
-        group: "Unit Tests - Linux"
         requires:
           - Setup Linux
         post-steps:

@@ -132,7 +132,7 @@ windows-workflow: &windows-workflow
         run-command: test:jest:ci
         test-results-for: jest
         requires:
-          - Setup Linux
+          - Setup Windows
         post-steps:
           - report-coverage
 

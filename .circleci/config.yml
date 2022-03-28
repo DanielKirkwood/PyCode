@@ -145,7 +145,6 @@ windows-workflow: &windows-workflow
           # executor comes from the "windows" orb
           name: win/default
           shell: bash.exe
-
         wait-on: "http://localhost:3000"
         yarn: true
         start: yarn start

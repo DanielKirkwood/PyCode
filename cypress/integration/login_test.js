@@ -37,6 +37,7 @@ describe('Login', () => {
 
   after(() => {
     cy.request({
+      failOnStatusCode: false,
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +80,6 @@ describe('Login', () => {
     })
 
     // confirm user logged in by checking cookies
-    console.log('cypress env ->', Cypress.env('NODE_ENV'))
     const cookieName =
       Cypress.env('NODE_ENV') === 'development' ? 'next-auth.session-token' : '__Secure-next-auth.session-token'
 

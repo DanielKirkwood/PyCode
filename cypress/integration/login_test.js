@@ -72,7 +72,7 @@ describe('Login', () => {
     cy.findByLabelText(/Password/i).type(user.password)
 
     cy.get('@submit').click()
-    cy.wait(3000)
+
 
     // check re-routed to challenges page
     cy.location().should((loc) => {

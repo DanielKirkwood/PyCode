@@ -1,7 +1,7 @@
 import PopupMessage from '@/components/PopupMessage'
 import { isEmail } from 'lib/auth/validate'
 import type { NextPage } from 'next'
-import { signIn, useSession } from 'next-auth/react'
+import { getCsrfToken, signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { NextRouter, useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
@@ -36,6 +36,8 @@ const Login: NextPage = () => {
 
   useEffect(() => {
     // if user is already logged in, send to challenges page
+    console.log('session -> ', session)
+
     if (session) {
       router.push('/challenges')
     }
@@ -66,7 +68,10 @@ const Login: NextPage = () => {
       redirect: false,
       email: email,
       password: password,
+      callbackUrl: `${window.location.origin}`,
     })
+
+    console.log(status)
 
     if (status.error !== null) {
       if (status.status === 401) {
@@ -195,3 +200,12 @@ const Login: NextPage = () => {
 }
 
 export default Login
+
+// This is the recommended way for Next.js 9.3 or newer
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  }
+}

@@ -65,7 +65,7 @@ linux-workflow: &linux-workflow
         executor: with-chrome-and-firefox
         wait-on: "http://localhost:3000"
         yarn: true
-        start: yarn start
+        start: yarn dev
         record: true
         parallel: true
         parallelism: 5
@@ -84,7 +84,7 @@ linux-workflow: &linux-workflow
         executor: with-chrome-and-firefox
         wait-on: "http://localhost:3000"
         yarn: true
-        start: yarn start
+        start: yarn dev
         record: true
         parallel: true
         parallelism: 5
@@ -147,7 +147,7 @@ windows-workflow: &windows-workflow
           shell: bash.exe
         wait-on: "http://localhost:3000"
         yarn: true
-        start: yarn start
+        start: yarn dev
         record: true
         parallel: true
         parallelism: 5

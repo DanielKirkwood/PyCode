@@ -2,7 +2,10 @@
   "projectId": "j89pg3",
   "baseUrl": "http://localhost:3000",
   "env": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "codeCoverage": {
+      "url": "http://localhost:3000/__coverage__"
+    }
   },
   "reporterOptions": {
     "mochaFile": "cypress/results/tests-[hash].xml",

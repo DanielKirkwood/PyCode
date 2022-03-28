@@ -9,6 +9,7 @@ describe('Navigation', () => {
     })
 
     it('should allow restricted navigation when signed out', () => {
+      cy.clearCookies()
       // Check login link
       cy.findAllByRole('link', { name: /Login/i }).first().click()
       cy.location('pathname').should('equal', '/login')

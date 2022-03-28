@@ -3,8 +3,8 @@
 describe('Sign-up', () => {
   let user
   before(() => {
-    cy.fixture('user.json').then((fData) => {
-      user = fData
+    cy.fixture('users.json').then((fData) => {
+      user = fData.users[Math.floor(Math.random() * fData.users.length)]
     })
   })
 
@@ -43,7 +43,7 @@ describe('Sign-up', () => {
   })
 
   it('should successfully signup user', () => {
-    // sub API response
+    // stub API response
     cy.intercept(
       {
         method: 'POST',

@@ -1,0 +1,39 @@
+{
+  "users": [
+    {
+      "name": "Morty Smith",
+      "password": "Zz42gsh!27n",
+      "email": "mortysmith@domain.com",
+      "image": "fake/image/url",
+      "role": "admin"
+    },
+    {
+      "name": "Sarah Jones",
+      "password": "password123",
+      "email": "sarahjones@domain.com",
+      "image": "fake/image/url",
+      "role": "user"
+    },
+    {
+      "name": "John Smith",
+      "password": "zGttT12IIo!q",
+      "email": "johnsmith@domain.com",
+      "image": "fake/image/url",
+      "role": "user"
+    },
+    {
+      "name": "Adam Adams",
+      "password": "wasde123",
+      "email": "adamadams@domain.com",
+      "image": "fake/image/url",
+      "role": "user"
+    },
+    {
+      "name": "Liz Tyler",
+      "password": "3!gstHK89",
+      "email": "liztyler@domain.com",
+      "image": "fake/image/url",
+      "role": "admin"
+    }
+  ]
+}

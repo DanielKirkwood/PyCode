@@ -4,7 +4,6 @@ orbs:
   cypress: cypress-io/cypress@1
   node: circleci/node@5.0.1
   codecov: codecov/codecov@1.2.3
-  win: circleci/windows@4.0.0
 
 executors:
   with-chrome-and-firefox:
@@ -95,73 +94,7 @@ linux-workflow: &linux-workflow
         post-steps:
           - report-coverage
 
-windows-workflow: &windows-workflow
-  jobs:
-    # Setup
-    # 1. Install Cypress and Dependencies
-    # 2. Run linter
-    # 3. Run unit-tests
-    # 4. Run e2e-tests
-    - cypress/install:
-        name: "Setup Windows"
-        yarn: true
-        executor:
-          # executor comes from the "windows" orb
-          name: win/default
-          shell: bash.exe
-          size: large
-        # pre-steps:
-        #   - run:
-        #       name: Disabling Windows Defender
-        #       shell: powershell.exe
-        #       command: Set-MpPreference -DisableRealtimeMonitoring $true
-        build: yarn build
-        post-steps:
-          - run:
-               name: Print machine info ℹ️
-               command: yarn cypress info
-          - run:
-              name: Cypress cache list
-              command: yarn cypress cache list
-          - run:
-              name: Lint files
-              command: yarn lint
-
-    - node/test:
-        version: "14.19"
-        pkg-manager: yarn
-        run-command: test:jest:ci
-        test-results-for: jest
-        requires:
-          - Setup Windows
-        post-steps:
-          - report-coverage
-
-    # Run E2E tests in Windows in Electron
-    - cypress/run:
-        name: "E2E - Electron - Windows"
-        spec: cypress/integration/*
-        executor:
-          # executor comes from the "windows" orb
-          name: win/default
-          shell: bash.exe
-        wait-on: "http://localhost:3000"
-        yarn: true
-        start: yarn next
-        record: true
-        parallel: true
-        parallelism: 5
-        ci-build-id: ${CIRCLE_SHA1:0:8}
-        group: "E2E - Electron - Windows"
-        requires:
-          - Setup Windows
-        post-steps:
-          - report-coverage
-        no-workspace: true
-        timeout: 30m
-
 workflows:
   linux:
     <<: *linux-workflow
-  windows:
-    <<: *windows-workflow
+

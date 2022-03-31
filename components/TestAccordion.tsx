@@ -14,7 +14,7 @@ interface Props {
 }
 
 const TestAccordion = ({ code, inputs, output, testNumber, fnName }: Props) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(testNumber === 1 ? true : false)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState('Here you can view any print statements or error messages for debugging')
   const [error, setError] = useState('')

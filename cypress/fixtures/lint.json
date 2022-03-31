@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "payload": {
+    "messages": [
+      {
+        "line": 2,
+        "message": "Final newline missing",
+        "messageID": "C0304",
+        "symbol": "missing-final-newline",
+        "type": "convention"
+      },
+      {
+        "line": 1,
+        "message": "Unused argument 's'",
+        "messageID": "W0613",
+        "symbol": "unused-argument",
+        "type": "warning"
+      }
+    ]
+  }
+}

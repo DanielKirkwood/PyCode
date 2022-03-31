@@ -107,3 +107,24 @@ export const SaveOne = async (userChallengeData: Collection, userID: string, cha
     return null
   }
 }
+
+export const deleteOne = async (users: Collection, userID: string) => {
+  try {
+    if (!ObjectId.isValid(userID)) {
+      return { error: 'user id is invalid' }
+    }
+
+    const status = await users.deleteOne({
+      _id: ObjectId.createFromHexString(userID),
+    })
+
+    if (status.deletedCount !== 1) {
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}

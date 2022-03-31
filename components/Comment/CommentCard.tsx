@@ -47,14 +47,12 @@ const CommentCard = ({ commentID, owner, body, createdAt, onDelete, onEditSubmit
               <p className="relative text-xl whitespace-nowrap truncate overflow-hidden">{`${owner.name} - ${owner.role}`}</p>
               {session?.user.id === owner.id && (
                 <div>
-                  <FaEdit
-                    onClick={onEditButtonClick}
-                    className="text-sm text-gray-700 mx-1 hover:text-blue-500 inline-block align-middle"
-                  />
-                  <FaTrash
-                    onClick={() => onDelete(commentID)}
-                    className="text-sm text-gray-700 mx-1 hover:text-red-500 inline-block align-middle"
-                  />
+                  <button type="button" aria-label="Enable Edit Comment" onClick={onEditButtonClick}>
+                    <FaEdit className="text-sm text-gray-700 mx-1 hover:text-blue-500 inline-block align-middle" />
+                  </button>
+                  <button type="button" aria-label="Delete Comment" onClick={() => onDelete(commentID)}>
+                    <FaTrash className="text-sm text-gray-700 mx-1 hover:text-red-500 inline-block align-middle" />
+                  </button>
                 </div>
               )}
             </div>

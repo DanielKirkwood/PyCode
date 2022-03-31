@@ -1,4 +1,4 @@
-import Table from '@/components/Table'
+import Table from '@/components/Table/Table'
 import clientPromise from 'lib/db/mongodb'
 import { getUser } from 'lib/db/users'
 import type { GetServerSideProps, NextPage } from 'next'

@@ -167,6 +167,7 @@ const Create: NextPage = () => {
                   type="text"
                   name="inputName"
                   id="inputName"
+                  placeholder="input name goes here..."
                   value={challengeData.testCases[testID].inputs[j].inputName}
                 />
               </td>
@@ -177,6 +178,7 @@ const Create: NextPage = () => {
                   type="text"
                   name="inputValue"
                   id="inputValue"
+                  placeholder="input value goes here..."
                   value={challengeData.testCases[testID].inputs[j].inputValue}
                 />
               </td>
@@ -202,6 +204,7 @@ const Create: NextPage = () => {
               type="text"
               name="output"
               id="output"
+              placeholder="output value goes here..."
               value={challengeData.testCases[testID].output}
             />
           </td>
@@ -276,9 +279,11 @@ const Create: NextPage = () => {
                           </button>
                         </span>
                       ) : (
-                        <span onClick={() => setEditableTestID(i)} className="hover:text-blue-500">
-                          <FiEdit2 className="align-middle inline-block" />
-                        </span>
+                        <button aria-label="Edit Test" onClick={() => setEditableTestID(i)}>
+                          <span className="hover:text-blue-500">
+                            <FiEdit2 className="align-middle inline-block" />
+                          </span>
+                        </button>
                       )}
                     </h3>
                   </div>

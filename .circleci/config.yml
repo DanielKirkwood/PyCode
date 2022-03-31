@@ -1,41 +1,100 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.7
+  cypress: cypress-io/cypress@1
+  node: circleci/node@5.0.1
+  codecov: codecov/codecov@1.2.3
 
-jobs:
-  lint-and-test:
+executors:
+  with-chrome-and-firefox:
     docker:
-      - image: cimg/node:14.18
+      - image: "cypress/browsers:node14.17.0-chrome88-ff89"
+    resource_class: medium+
+    environment:
+      NODE_ENV: development
+
+# ~~~~~~~~~~~~~~~~~~~~~~~ Commands ~~~~~~~~~~~~~~~~~~~~ #
+commands:
+  report-coverage:
+    description: |
+      Store coverage report as an artifact and send it to Codecov service.
     steps:
-      - checkout
-      - restore_cache:
-          name: "Restore Yarn Package Cache"
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: "Install Dependencies"
-          command: yarn install --immutable
-      - save_cache:
-          name: "Save Yarn Package Cache"
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - .yarn/cache
-            - .yarn/unplugged
-      - run:
-          name: "JavaScript Linter"
-          command: yarn lint
-      - run:
-          name: "JavaScript Test Suite"
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: reports/junit/
-          command: yarn test --ci --runInBand --reporters=default --reporters=jest-junit
-      - store_test_results:
-          path: reports/junit
       - store_artifacts:
-          path: reports/junit
+          path: coverage
+      - run: npx nyc report --reporter=text || true
+      - codecov/upload:
+          file: coverage/coverage-final.json
+
+# ~~~~~~~~~~~~~~ Workflows ~~~~~~~~~~~~~~~~~~~~~~~~~ #
+linux-workflow: &linux-workflow
+  jobs:
+    # Setup
+    # 1. Install Cypress and Dependencies
+    # 2. Run linter
+    # 3. Run unit-tests
+    # 4. Run e2e-tests
+    - cypress/install:
+        name: "Setup Linux"
+        yarn: true
+        executor: with-chrome-and-firefox
+        build: "yarn build"
+        post-steps:
+          - run:
+               name: Print machine info ℹ️
+               command: yarn cypress info
+          - run:
+              name: Lint files
+              command: yarn lint
+
+    - node/test:
+        version: "14.19"
+        pkg-manager: yarn
+        run-command: test:jest:ci
+        test-results-for: jest
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
+
+    # Run cypress
+    - cypress/run:
+        name: "E2E - Chrome - Linux"
+        browser: chrome
+        spec: cypress/integration/*
+        executor: with-chrome-and-firefox
+        wait-on: "http://localhost:3000"
+        yarn: true
+        start: yarn next
+        record: true
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "E2E - Chrome"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
+
+    # Run E2E tests in Firefox
+    - cypress/run:
+        name: "E2E - Firefox - Linux"
+        browser: firefox
+        spec: cypress/integration/*
+        executor: with-chrome-and-firefox
+        wait-on: "http://localhost:3000"
+        yarn: true
+        start: yarn next
+        record: true
+        parallel: true
+        parallelism: 5
+        ci-build-id: ${CIRCLE_SHA1:0:8}
+        group: "E2E - Firefox"
+        requires:
+          - Setup Linux
+        post-steps:
+          - report-coverage
 
 workflows:
-  Lint_And_Test:
-    jobs:
-      - lint-and-test
+  linux:
+    <<: *linux-workflow
+

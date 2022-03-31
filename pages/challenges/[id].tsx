@@ -1,5 +1,5 @@
 import CodeEditor from '@/components/CodeEditor'
-import { CommentList } from '@/components/CommentList'
+import { CommentList } from '@/components/Comment/CommentList'
 import { getOne } from 'lib/db/challenges'
 import clientPromise from 'lib/db/mongodb'
 import type { GetServerSideProps, NextPage } from 'next'

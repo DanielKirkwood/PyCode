@@ -1,4 +1,4 @@
-import ChallengeCard from '@/components/ChallengeCard'
+import ChallengeCard from '@/components/ChallengeCard/ChallengeCard'
 import React from 'react'
 
 interface Challenge {

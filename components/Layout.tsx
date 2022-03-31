@@ -1,6 +1,6 @@
+import Footer from '@/components/Footer/Footer'
+import Navbar from '@/components/Navbar/Navbar'
 import { useSession } from 'next-auth/react'
-import Footer from './Footer'
-import Navbar from './Navbar/Navbar'
 
 export default function Layout({ children }) {
   const { status } = useSession()

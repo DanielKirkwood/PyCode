@@ -81,8 +81,11 @@ const authHandler: NextApiHandler = async (req, res) =>
 
           const user = await db.collection('users').findOne({ email: credentials.email })
 
+          console.log(user)
+
           if (!user) {
-            console.error('No User with that email')
+            console.error('no user with that email')
+
             return null
           }
 
@@ -93,19 +96,21 @@ const authHandler: NextApiHandler = async (req, res) =>
             return null
           }
 
-          return { email: user.email, name: user.name, image: user.image, role: user.role }
+          if (user && checkPassword) {
+            return { email: user.email, name: user.name, image: user.image, role: user.role }
+          }
         },
       }),
     ],
     callbacks: {
-      jwt({ token, user }) {
+      jwt: async ({ token, user }) => {
         // first time jwt callback is run, user object is available
         if (user) {
           token.id = user.id
         }
         return token
       },
-      async session({ session, token }) {
+      session: async ({ session, token }) => {
         if (token) {
           const data = await getUser(session.user.email)
 

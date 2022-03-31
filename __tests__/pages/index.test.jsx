@@ -5,9 +5,9 @@
  */
 
 import { render, screen } from '@testing-library/react'
-import { SessionProvider } from 'next-auth/react'
 import React from 'react'
-import Home from '../pages/index'
+import Home from '../../pages/index'
+import wrapWithSession from '../__utils__/wrapWithSession'
 
 jest.mock(
   'next/image',
@@ -18,13 +18,6 @@ jest.mock(
     }
 )
 
-const wrapWithSession = (session, component) => {
-  return (
-    <SessionProvider session={session} refetchInterval={5 * 60}>
-      {component}
-    </SessionProvider>
-  )
-}
 
 describe('Home', () => {
   it('renders the main heading', async () => {
@@ -41,7 +34,7 @@ describe('Home', () => {
   it('renders login button if user not signed in', () => {
     render(wrapWithSession(null, <Home />))
 
-    const button = screen.getByTestId('call-to-action')
+    const button = screen.getByTestId(/call-to-action/)
 
     expect(button).toBeInTheDocument()
 
@@ -56,7 +49,7 @@ describe('Home', () => {
 
     render(wrapWithSession(session, <Home />))
 
-    const button = screen.getByTestId('call-to-action')
+    const button = screen.getByTestId(/call-to-action/)
 
     expect(button).toBeInTheDocument()
 

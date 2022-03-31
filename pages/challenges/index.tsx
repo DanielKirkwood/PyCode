@@ -1,5 +1,5 @@
-import ChallengeList from '@/components/ChallengeList'
-import Pagination from '@/components/Pagination'
+import ChallengeList from '@/components/ChallengeList/ChallengeList'
+import Pagination from '@/components/Pagination/Pagination'
 import SkeletonChallengeList from '@/components/SkeletonChallengeList'
 import type { NextPage } from 'next'
 import { useSession } from 'next-auth/react'

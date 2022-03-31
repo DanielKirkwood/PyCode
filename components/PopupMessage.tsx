@@ -10,7 +10,7 @@ interface Props {
 const PopupMessage = ({ onAnimationEnd, body, type }: Props) => {
   return (
     <div
-      className="flex w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-md animate-fade-in-down absolute top-1/4 left-1/3 transform -translate-x-1/3 -translate-y-1/4"
+      className="flex w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-md animate-fade-in-down absolute top-1/4 left-1/3 transform -translate-x-1/3 -translate-y-1/4 z-50"
       onAnimationEnd={onAnimationEnd}
     >
       <div className={`flex items-center justify-center w-12 ${type === 'Success' ? 'bg-green-500' : 'bg-red-500'}`}>

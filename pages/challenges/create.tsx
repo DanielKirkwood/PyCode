@@ -118,8 +118,6 @@ const Create: NextPage = () => {
     const data = await response.json()
 
     if (data.success) {
-      console.log(data)
-
       router.push(`/challenges/${data.payload.insertID}`)
       return
     }

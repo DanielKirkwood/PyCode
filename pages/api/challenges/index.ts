@@ -13,6 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
       const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
       const query = {}
+      if (!req.query.admin) {
+        query['verified'] = true
+      }
       if (req.query.user) {
         query['owner'] = ObjectId.createFromHexString(req.query.user.toString())
       }

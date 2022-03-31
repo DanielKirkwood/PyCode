@@ -33,7 +33,7 @@ const Admin: NextPage = () => {
         <>
           <h1>Admin Dashboard</h1>
           <Table
-            dataSource="/api/users?"
+            dataSource="/api/users"
             dataKey="users"
             exclude={['password', 'nameSearch', 'image', 'emailVerified']}
             protectedKeys={['_id']}

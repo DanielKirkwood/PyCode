@@ -1,5 +1,6 @@
 import clientPromise from 'lib/db/mongodb'
 import { getAllUsers } from 'lib/db/users'
+import { ObjectId } from 'mongodb'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -11,7 +12,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET':
       const limit = !req.query.limit ? 50 : parseInt(req.query.limit as string, 10)
       const skip = !req.query.skip ? 0 : parseInt(req.query.skip as string, 10)
-      const query = !req.query.search ? {} : { nameSearch: { $regex: `${String(req.query.search)}`, $options: 'i' } }
+      const query = !req.query.search
+        ? { _id: { $ne: ObjectId.createFromHexString('6182866e540bcdf031061884') } }
+        : {
+            nameSearch: { $regex: `${String(req.query.search)}`, $options: 'i' },
+            _id: { $ne: ObjectId.createFromHexString('6182866e540bcdf031061884') },
+          }
 
       const documents = await getAllUsers(users, query, limit, skip)
 

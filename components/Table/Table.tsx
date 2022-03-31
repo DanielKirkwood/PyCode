@@ -17,8 +17,14 @@ function Table({ dataSource, dataKey, exclude, protectedKeys, formDataObject }: 
   const [skip, setSkip] = useState<number>(0)
   const [searchInput, setSearchInput] = useState<string>('')
 
+
   const fetcher = (url: RequestInfo) => fetch(url).then((res) => res.json())
-  const { data, mutate } = useSWR(`${dataSource}&limit=${limit}&skip=${skip}&search=${searchInput}`, fetcher)
+  const { data, mutate } = useSWR(
+    `${
+      dataSource.includes('?') ? dataSource : dataSource.concat('?')
+    }&limit=${limit}&skip=${skip}&search=${searchInput}`,
+    fetcher
+  )
 
   const keys = Object.keys(formDataObject)
   const initialData = {}

@@ -12,7 +12,7 @@
       <img alt="CircleCI Status" src="https://circleci.com/gh/DanielKirkwood/pycode/tree/main.svg?style=svg">
       <img alt="CodeCov Coverage" src="https://codecov.io/gh/DanielKirkwood/pycode/branch/main/graph/badge.svg?token=0FAIP096ED">
     </p>
-    <a href="https://pycode.code"><strong>Go to app »</strong></a>
+    <a href="https://www.pycode.codes"><strong>Go to app »</strong></a>
     <br />
     <br />
     <a href="https://github.com/DanielKirkwood/pycode">Explore Docs</a>
